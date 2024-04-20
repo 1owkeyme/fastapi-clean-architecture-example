@@ -4,7 +4,7 @@ import uvicorn
 from starlette.applications import Starlette
 
 
-class APIServer(ABC):
+class APIServerBase(ABC):
     def run(self, port: int) -> None:
         config = uvicorn.Config(self._get_asgi_app(), host="0.0.0.0", port=port)
 

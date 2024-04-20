@@ -14,7 +14,9 @@ pydantic-settings = "^2.2.1"
 uvicorn = "^0.29.0"
 starlette = "^0.37.2"
 fastapi = "^0.110.2"
-sqlalchemy = {extras = ["asyncio"], version = "^2.0.29"}
+
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.29" }
+asyncpg = "^0.29.0"
 
 
 [build-system]

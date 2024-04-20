@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
-from .. import interfaces
+from ..base import APIServerBase
 from .routers import users
 
 
-class FastAPIServer(interfaces.APIServer):
+class FastAPIServer(APIServerBase):
     def _get_asgi_app(self) -> FastAPI:
         app = FastAPI()
 

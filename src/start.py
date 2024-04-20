@@ -1,7 +1,7 @@
 import os
 from enum import IntEnum, unique
 
-from infrastructure.api_server.fastapi_ import FastAPIServer
+from infrastructure.api_servers.fastapi_ import FastAPIServer
 
 
 @unique
