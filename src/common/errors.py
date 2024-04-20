@@ -1,0 +1,2 @@
+class NoRealizationFoundError(Exception):
+    pass
