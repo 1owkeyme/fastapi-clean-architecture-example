@@ -36,7 +36,7 @@ class AppSettings(BaseAppSettings):
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int = 5432
-    POSTGRES_USERNAME: str
+    POSTGRES_USERNAME: str = Field(alias="POSTGRES_USER")
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str = ""
 

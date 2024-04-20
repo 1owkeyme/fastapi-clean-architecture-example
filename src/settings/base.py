@@ -10,9 +10,12 @@ class AppEnv(StrEnum):
     TEST = "test"
 
 
-class BaseAppSettings(BaseSettings):
-    model_config = SettingsConfigDict(extra="ignore", env_file=".env")
+_DEFAULT_APP_ENV = AppEnv.DEV
 
-    APP_ENV: AppEnv = AppEnv.DEV
+
+class BaseAppSettings(BaseSettings):
+    model_config = SettingsConfigDict(extra="ignore")
+
+    APP_ENV: AppEnv = _DEFAULT_APP_ENV
     APP_TITLE: str = "FastAPI Example Application"
     SECRET_KEY: str = secrets.token_urlsafe(32)
