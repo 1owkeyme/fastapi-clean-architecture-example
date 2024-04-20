@@ -14,5 +14,5 @@ class BaseAppSettings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore", env_file=".env")
 
     APP_ENV: AppEnv = AppEnv.DEV
-    APP_NAME: str = "FastAPI Example Application"
+    APP_TITLE: str = "FastAPI Example Application"
     SECRET_KEY: str = secrets.token_urlsafe(32)

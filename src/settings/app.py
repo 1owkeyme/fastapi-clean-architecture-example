@@ -1,7 +1,7 @@
 import logging
 import typing as t
 
-from pydantic import AfterValidator, computed_field
+from pydantic import AfterValidator, Field, computed_field
 from pydantic.networks import AnyUrl, PostgresDsn
 from pydantic_core import MultiHostUrl
 
@@ -16,13 +16,12 @@ def remove_trailing_slashes(urls: list[AnyUrl]) -> list[AnyUrl]:
 
 
 class AppSettings(BaseAppSettings):
-    API_PREFIX: str = "/api/v"
-    API_VERSION: str = "1"
+    API_V1_PREFIX: str = "/api/v1"
 
     OPENAPI_URL: str = "/openapi.json"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # TODO:
 
-    DOMAIN: str = "localhost"
+    DOMAIN: str = "localhost"  # TODO:
 
     @computed_field  # type: ignore[misc]
     @property
@@ -31,7 +30,9 @@ class AppSettings(BaseAppSettings):
             return f"http://{self.DOMAIN}"
         return f"https://{self.DOMAIN}"
 
-    CORS_ORIGINS: t.Annotated[list[AnyUrl], AfterValidator] | None = None
+    CORS_ORIGINS: t.Annotated[
+        list[AnyUrl], AfterValidator(remove_trailing_slashes)
+    ] = Field(default_factory=list)
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int = 5432

@@ -7,20 +7,20 @@ from . import api_v1
 
 
 def _generate_unique_id_function(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    return f"{route.tags[0]}:{route.name}"
 
 
 class FastAPIServer(APIServerBase):
     def __init__(
         self,
         app_title: str,
-        api_prefix: str,
+        api_v1_prefix: str,
         openapi_url: str,
-        cors_origins: list[str] | None = None,
+        cors_origins: list[str],
     ) -> None:
         self.__app_title = app_title
         self.__openapi_url = openapi_url
-        self.__api_prefix = api_prefix
+        self.__api_v1_prefix = api_v1_prefix
         self.__cors_origins = cors_origins
 
     def _get_asgi_app(self) -> FastAPI:
@@ -30,7 +30,7 @@ class FastAPIServer(APIServerBase):
             generate_unique_id_function=_generate_unique_id_function,
         )
 
-        if self.__cors_origins is not None and len(self.__cors_origins):
+        if len(self.__cors_origins):
             app.add_middleware(
                 CORSMiddleware,
                 allow_origins=self.__cors_origins,
@@ -39,6 +39,6 @@ class FastAPIServer(APIServerBase):
                 allow_headers=["*"],
             )
 
-        app.include_router(api_v1.router, prefix=self.__api_prefix)
+        app.include_router(api_v1.router, prefix=self.__api_v1_prefix)
 
         return app
