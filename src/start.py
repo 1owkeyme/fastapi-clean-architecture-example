@@ -2,6 +2,7 @@ import os
 from enum import IntEnum, unique
 
 from infrastructure.api_servers.fastapi_ import FastAPIServer
+from settings import get_app_settings
 
 
 @unique
@@ -12,8 +13,9 @@ class ExitCode(IntEnum):
 
 def main() -> int:
     try:
-        # TODO: use settings
-        api_server = FastAPIServer()
+        settings = get_app_settings()
+
+        api_server = FastAPIServer(cors_origins=settings.CORS_ORIGINS)
     except Exception:
         # TODO: logging
         return ExitCode.FAILURE

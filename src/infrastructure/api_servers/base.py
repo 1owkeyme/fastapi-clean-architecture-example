@@ -6,7 +6,11 @@ from starlette.applications import Starlette
 
 class APIServerBase(ABC):
     def run(self, port: int) -> None:
-        config = uvicorn.Config(self._get_asgi_app(), host="0.0.0.0", port=port)
+        config = uvicorn.Config(
+            self._get_asgi_app(),
+            host="0.0.0.0",
+            port=port,
+        )
 
         uvicorn.Server(config).run()
 

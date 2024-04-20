@@ -17,6 +17,116 @@ fastapi = "^0.110.2"
 
 sqlalchemy = { extras = ["asyncio"], version = "^2.0.29" }
 asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+
+[tool.poetry.group.linting.dependencies]
+mypy = "^1.9"
+ruff = "^0.4"
+safety = "^3.1"
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "./src"
+
+[tool.ruff]
+builtins = []
+cache-dir = ".ruff_cache"
+exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".mypy_cache",
+    ".nox",
+    ".pytype",
+    ".ruff_cache",
+    ".tox",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+]
+extend-exclude = []
+extend-include = []
+fix = false
+fix-only = false
+force-exclude = false
+include = ["*.py", "*.pyi", "**/pyproject.toml"]
+indent-width = 4
+line-length = 79
+namespace-packages = []
+output-format = "concise"
+preview = false
+respect-gitignore = false
+show-fixes = false
+src = ["src"]
+target-version = "py311"
+
+
+[tool.ruff.format]
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+exclude = []
+indent-style = "space"
+line-ending = "auto"
+preview = false
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = [
+    "F",     # pyflakes
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "I",     # isort
+    "N",     # pep8-naming
+    "ANN",   # flake8-annotations
+    "ASYNC", # flake8-async
+    "S",     # flake8-bandit
+    "B",     # flake8-bugbear
+    "A",     # flake8-builtins
+    "C4",    # flake8-comprehensions
+    "EM",    # flake8-errmsg
+    "INP",   # flake8-no-pep420
+    "PIE",   # flake8-pie
+    "T20",   # flake8-print
+    "PT",    # flake8-pytest-style
+    "RET",   # flake8-return
+    "SIM",   # flake8-simplify
+    "ARG",   # flake8-unused-arguments
+    "PTH",   # flake8-use-pathlib
+    "ERA",   # eradicate
+    "RUF",   # Ruff-specific rules
+]
+allowed-confusables = []
+dummy-variable-rgx = "^_$"
+extend-select = []
+extend-fixable = []
+extend-safe-fixes = []
+extend-unsafe-fixes = []
+explicit-preview-rules = false
+fixable = ["ALL"]
+unfixable = []
+typing-modules = []
+ignore = ["ANN101", "ANN102", "S104"]
+extend-per-file-ignores = {}
+external = []
+logger-objects = []
+ignore-init-module-imports = true
+task-tags = ["TODO", "FIXME"]
+
+[tool.ruff.lint.isort]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+lines-after-imports = 2
+lines-between-types = 0
 
 
 [build-system]
