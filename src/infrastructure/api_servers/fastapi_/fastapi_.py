@@ -16,12 +16,14 @@ class FastAPIServer(APIServerBase):
     def __init__(
         self,
         auth_usecases_builder: usecases.auth.AuthUsecasesBuilder,
+        movie_usecases_builder: usecases.movie.MovieUsecasesBuilder,
         app_title: str,
         api_v1_prefix: str,
         openapi_url: str,
         cors_origins: list[str],
     ) -> None:
         self.__auth_usecases_builder = auth_usecases_builder
+        self.__movie_usecases_builder = movie_usecases_builder
 
         self.__app_title = app_title
         self.__openapi_url = openapi_url
@@ -45,9 +47,10 @@ class FastAPIServer(APIServerBase):
             )
 
         api_v1_router = api_v1.get_api_router(
-            auth_usecases_builder=self.__auth_usecases_builder
+            auth_usecases_builder=self.__auth_usecases_builder,
+            movie_usecases_builder=self.__movie_usecases_builder,
         )
 
-        app.include_router(api_v1_router)
+        app.include_router(api_v1_router, prefix=self.__api_v1_prefix)
 
         return app

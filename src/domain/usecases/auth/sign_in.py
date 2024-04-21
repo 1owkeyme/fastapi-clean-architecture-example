@@ -2,5 +2,5 @@ class SignInUsecase:
     def __init__(self) -> None:
         pass
 
-    def execute() -> None:
+    async def execute(self) -> None:
         pass

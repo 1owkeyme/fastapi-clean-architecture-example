@@ -8,8 +8,11 @@ _STARS_MAX = 5.0
 _STAR_STEP = 0.5
 
 
-class Review(StrictBaseModel):
-    movie_id: int
+class ReviewId(StrictBaseModel):
+    id: int
+
+
+class ReviewInfo(StrictBaseModel):
     stars: float = Field(
         ge=_STARS_MIN,
         multiple_of=_STAR_STEP,

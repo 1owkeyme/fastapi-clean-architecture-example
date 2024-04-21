@@ -3,6 +3,10 @@ from datetime import timedelta
 from common import StrictBaseModel
 
 
-class Movie(StrictBaseModel):
+class MovieId(StrictBaseModel):
+    id: int
+
+
+class MovieInfo(StrictBaseModel):
     title: str
     duration: timedelta

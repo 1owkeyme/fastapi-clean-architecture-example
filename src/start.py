@@ -23,8 +23,13 @@ def main() -> int:
             user_repository=repository
         )
 
+        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(
+            movie_repository=repository
+        )
+
         api_server = FastAPIServer(
             auth_usecases_builder=auth_usecases_builder,
+            movie_usecases_builder=moview_usecases_builder,
             app_title=settings.APP_TITLE,
             api_v1_prefix=settings.API_V1_PREFIX,
             openapi_url=settings.OPENAPI_URL,
