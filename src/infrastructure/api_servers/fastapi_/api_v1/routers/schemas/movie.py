@@ -18,11 +18,7 @@ class CreateMovieSchema(StrictBaseModel):
 
 
 class DeleteMovieSchema(StrictBaseModel):
-    id_: int
-    
-    
+    id: int
+
     def to_movie_id_entity(self) -> entities.movie.MovieId:
-        return entities.movie.MovieId(
-            title=self.title,   
-            duration=self.duration,
-        )
+        return entities.movie.MovieId(id=self.id)

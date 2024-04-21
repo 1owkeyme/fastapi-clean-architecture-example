@@ -1,6 +1,7 @@
 import os
 from enum import IntEnum, unique
 
+import services
 from domain import usecases
 from infrastructure.api_servers.fastapi_ import FastAPIServer
 from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
@@ -17,10 +18,12 @@ def main() -> int:
     try:
         settings = get_app_settings()
 
-        repository = SQLAlchemy()
+        sha256_hash_service = services.security.hash_.SHA256HashService()
+        repository = SQLAlchemy(str(settings.POSTGRES_DSN))
 
-        auth_usecases_builder = usecases.auth.AuthUsecasesBuilder(
-            user_repository=repository
+        user_usecases_builder = usecases.user.UserUsecasesBuilder(
+            user_repository=repository,
+            hash_service=sha256_hash_service,
         )
 
         moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(
@@ -28,7 +31,7 @@ def main() -> int:
         )
 
         api_server = FastAPIServer(
-            auth_usecases_builder=auth_usecases_builder,
+            user_usecases_builder=user_usecases_builder,
             movie_usecases_builder=moview_usecases_builder,
             app_title=settings.APP_TITLE,
             api_v1_prefix=settings.API_V1_PREFIX,

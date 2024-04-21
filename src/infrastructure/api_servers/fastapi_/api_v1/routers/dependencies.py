@@ -5,15 +5,15 @@ from fastapi import Depends
 from domain import usecases
 
 
-auth_usecases_builder: usecases.auth.AuthUsecasesBuilder | None = None
+user_usecases_builder: usecases.user.UserUsecasesBuilder | None = None
 movie_usecases_builder: usecases.movie.MovieUsecasesBuilder | None = None
 review_usecases_builder: usecases.review.ReviewUsecasesBuilder | None = None
 
 
-def __get_auth_usecases_builder() -> usecases.auth.AuthUsecasesBuilder:
-    if auth_usecases_builder is None:
+def __get_user_usecases_builder() -> usecases.user.UserUsecasesBuilder:
+    if user_usecases_builder is None:
         raise RuntimeError  # TODO: raise HTTPException or smth
-    return auth_usecases_builder
+    return user_usecases_builder
 
 
 def __get_movie_usecases_builder() -> usecases.movie.MovieUsecasesBuilder:
@@ -28,21 +28,21 @@ def __get_review_usecases_builder() -> usecases.review.ReviewUsecasesBuilder:
     return review_usecases_builder
 
 
-def __get_sign_in_usecase() -> usecases.auth.SignInUsecase:
-    return __get_auth_usecases_builder().construct_sign_in_usecase()
+def __get_sign_in_usecase() -> usecases.user.SignInUsecase:
+    return __get_user_usecases_builder().construct_sign_in_usecase()
 
 
 SignInUsecaseDependency = t.Annotated[
-    usecases.auth.SignInUsecase, Depends(__get_sign_in_usecase)
+    usecases.user.SignInUsecase, Depends(__get_sign_in_usecase)
 ]
 
 
-def __get_sign_up_usecase() -> usecases.auth.SignUpUsecase:
-    return __get_auth_usecases_builder().construct_sign_up_usecase()
+def __get_sign_up_usecase() -> usecases.user.CreateUserUsecase:
+    return __get_user_usecases_builder().construct_sign_up_usecase()
 
 
-SignUpUsecaseDependency = t.Annotated[
-    usecases.auth.SignUpUsecase, Depends(__get_sign_up_usecase)
+CreateUserUsecaseDependency = t.Annotated[
+    usecases.user.CreateUserUsecase, Depends(__get_sign_up_usecase)
 ]
 
 

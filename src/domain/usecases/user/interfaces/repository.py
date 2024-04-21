@@ -7,6 +7,6 @@ class UserRepository(ABC):
     @abstractmethod
     async def create_user(
         self,
-        credentials: entities.user.Credentials,
+        safe_credentials: entities.user.SafeCredentials,
     ) -> None:
         pass

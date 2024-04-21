@@ -15,14 +15,14 @@ def _generate_unique_id_function(route: APIRoute) -> str:
 class FastAPIServer(APIServerBase):
     def __init__(
         self,
-        auth_usecases_builder: usecases.auth.AuthUsecasesBuilder,
+        user_usecases_builder: usecases.user.UserUsecasesBuilder,
         movie_usecases_builder: usecases.movie.MovieUsecasesBuilder,
         app_title: str,
         api_v1_prefix: str,
         openapi_url: str,
         cors_origins: list[str],
     ) -> None:
-        self.__auth_usecases_builder = auth_usecases_builder
+        self.__user_usecases_builder = user_usecases_builder
         self.__movie_usecases_builder = movie_usecases_builder
 
         self.__app_title = app_title
@@ -47,7 +47,7 @@ class FastAPIServer(APIServerBase):
             )
 
         api_v1_router = api_v1.get_api_router(
-            auth_usecases_builder=self.__auth_usecases_builder,
+            user_usecases_builder=self.__user_usecases_builder,
             movie_usecases_builder=self.__movie_usecases_builder,
         )
 

@@ -2,19 +2,19 @@ from fastapi import APIRouter
 
 from domain import usecases
 
-from .routers import auth, dependencies, movies
+from .routers import dependencies, movies, users
 
 
 def get_api_router(
-    auth_usecases_builder: usecases.auth.AuthUsecasesBuilder,
+    user_usecases_builder: usecases.user.UserUsecasesBuilder,
     movie_usecases_builder: usecases.movie.MovieUsecasesBuilder,
 ) -> APIRouter:
-    dependencies.auth_usecases_builder = auth_usecases_builder
+    dependencies.user_usecases_builder = user_usecases_builder
     dependencies.movie_usecases_builder = movie_usecases_builder
 
     router = APIRouter()
 
-    router.include_router(auth.router, prefix="/auth", tags=["auth"])
-    router.include_router(movies.router, prefix="/users", tags=["users"])
+    router.include_router(users.router, prefix="/users", tags=["users"])
+    router.include_router(movies.router, prefix="/movies", tags=["movies"])
 
     return router
