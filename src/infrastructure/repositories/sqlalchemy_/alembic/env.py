@@ -20,7 +20,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-print(str(get_app_settings().POSTGRES_DSN))
+
 config.set_main_option("sqlalchemy.url", str(get_app_settings().POSTGRES_DSN))
 
 

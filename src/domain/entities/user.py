@@ -1,6 +1,6 @@
 from common import StrictBaseModel
 
 
-class User(StrictBaseModel):
+class Credentials(StrictBaseModel):
     username: str
-    hashed_password: str
+    password: str

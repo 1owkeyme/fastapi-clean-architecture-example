@@ -1,7 +1,9 @@
 import os
 from enum import IntEnum, unique
 
+from domain import usecases
 from infrastructure.api_servers.fastapi_ import FastAPIServer
+from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
 from settings import get_app_settings
 
 
@@ -15,7 +17,14 @@ def main() -> int:
     try:
         settings = get_app_settings()
 
+        repository = SQLAlchemy()
+
+        auth_usecases_builder = usecases.auth.AuthUsecasesBuilder(
+            user_repository=repository
+        )
+
         api_server = FastAPIServer(
+            auth_usecases_builder=auth_usecases_builder,
             app_title=settings.APP_TITLE,
             api_v1_prefix=settings.API_V1_PREFIX,
             openapi_url=settings.OPENAPI_URL,
