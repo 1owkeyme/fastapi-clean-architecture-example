@@ -8,4 +8,4 @@ class CreateMovieUsecase:
         self._movie_repository = movie_repository
 
     async def execute(self, movie_info: entities.movie.MovieInfo) -> None:
-        await self._movie_repository.create_movie(info=movie_info)
+        await self._movie_repository.create_movie(info_entity=movie_info)

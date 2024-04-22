@@ -1,6 +1,10 @@
+import typing as t
+
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Integer, Text
+
+from domain import entities
 
 from .base import Base
 from .constants import TableName
@@ -13,11 +17,12 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
 
     __table_args__ = (
         UniqueConstraint(
-            UserRelationMixin.user_id,
-            MovieRelationMixin.movie_id,
+            "user_id",
+            "movie_id",
             name="idx_unique_user_movie",
         ),
     )
+
     _user_id_unique = False  # separate compound unique index created
     _user_back_populates = TableName.REVIEWS
 
@@ -26,3 +31,15 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
 
     stars_10x: Mapped[int] = mapped_column(Integer())
     text: Mapped[str | None] = mapped_column(Text())
+
+    @classmethod
+    def from_review_info_enitity(
+        cls,
+        review_entity: entities.review.ReviewInfo,
+    ) -> t.Self:
+        return cls(
+            stars_x10=int(review_entity.stars * 10),
+            text=review_entity.text,
+            user_id=review_entity.user_id,
+            movie_id=review_entity.movie_id,
+        )

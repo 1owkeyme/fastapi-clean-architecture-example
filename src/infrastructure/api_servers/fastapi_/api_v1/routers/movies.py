@@ -25,8 +25,8 @@ async def delete(
     delete_movie_usecase: dependencies.DeleteMovieUsecaseDependency,
     delete_movie_schema: schemas.movie.DeleteMovieSchema,
 ) -> responses.EmptyResponse:
-    movie_info_entity = delete_movie_schema.to_movie_info_entity()
+    movie_id_enitity = delete_movie_schema.to_movie_id_entity()
 
-    await create_movie_usecase.execute(movie_info=movie_info_entity)
+    await delete_movie_usecase.execute(movie_id=movie_id_enitity)
 
     return responses.EmptyResponse.new()

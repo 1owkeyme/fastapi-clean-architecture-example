@@ -1,8 +1,8 @@
 """create_main_tables
 
-Revision ID: f46f87aa0396
+Revision ID: 7cca45280928
 Revises:
-Create Date: 2024-04-21 23:33:02.234102
+Create Date: 2024-04-22 03:21:43.853339
 
 """
 
@@ -13,7 +13,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision: str = "f46f87aa0396"
+revision: str = "7cca45280928"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

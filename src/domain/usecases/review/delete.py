@@ -8,4 +8,4 @@ class DeleteReviewUsecase:
         self._review_repository = review_repository
 
     async def execute(self, review_id: entities.review.ReviewId) -> None:
-        await self._review_repository.delete_review(id_=review_id)
+        await self._review_repository.delete_review(id_entity=review_id)

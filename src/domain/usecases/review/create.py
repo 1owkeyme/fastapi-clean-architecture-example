@@ -8,4 +8,4 @@ class CreateReviewUsecase:
         self._review_repository = review_repository
 
     async def execute(self, review_info: entities.review.ReviewInfo) -> None:
-        await self._review_repository.create_review(info=review_info)
+        await self._review_repository.create_review(info_entity=review_info)

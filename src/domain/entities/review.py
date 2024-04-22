@@ -13,9 +13,11 @@ class ReviewId(StrictBaseModel):
 
 
 class ReviewInfo(StrictBaseModel):
+    user_id: int
+    movie_id: int
     stars: float = Field(
         ge=_STARS_MIN,
         multiple_of=_STAR_STEP,
         le=_STARS_MAX,
     )
-    text: str
+    text: str | None = None

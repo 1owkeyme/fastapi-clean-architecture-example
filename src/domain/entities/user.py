@@ -4,6 +4,10 @@ from common import StrictBaseModel
 from domain.interfaces import security as security_interfaces
 
 
+class UserId(StrictBaseModel):
+    id: int
+
+
 class Username(StrictBaseModel):
     username: str
 
@@ -27,3 +31,7 @@ class SafeCredentials(Username):
                 plain_credentials.password,
             ),
         )
+
+
+class UserPublic(UserId, Username):
+    pass

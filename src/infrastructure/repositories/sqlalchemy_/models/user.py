@@ -6,6 +6,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.types import String
 
+from domain import entities
+
 from .base import Base
 from .constants import TableName
 
@@ -21,6 +23,9 @@ class User(Base):
     hashed_password_hex: Mapped[str] = mapped_column(String(120))
 
     reviews: Mapped[list[Review]] = relationship(back_populates="user")
+
+    def to_user_public_entity(self) -> entities.user.UserPublic:
+        return entities.user.UserPublic(id=self.id, username=self.username)
 
 
 class UserRelationMixin:

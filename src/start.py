@@ -18,7 +18,7 @@ def main() -> int:
     try:
         settings = get_app_settings()
 
-        sha256_hash_service = services.security.hash_.SHA256HashService()
+        sha256_hash_service = services.security.hash_.BCryptHashService()
         repository = SQLAlchemy(str(settings.POSTGRES_DSN))
 
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
@@ -26,9 +26,7 @@ def main() -> int:
             hash_service=sha256_hash_service,
         )
 
-        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(
-            movie_repository=repository
-        )
+        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=repository)
 
         api_server = FastAPIServer(
             user_usecases_builder=user_usecases_builder,

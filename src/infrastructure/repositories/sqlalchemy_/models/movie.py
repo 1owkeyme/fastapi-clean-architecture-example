@@ -7,6 +7,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.types import Interval, String
 
+from domain import entities
+
 from .base import Base
 from .constants import TableName
 
@@ -22,6 +24,13 @@ class Movie(Base):
     duration: Mapped[timedelta] = mapped_column(Interval())
 
     reviews: Mapped[list[Review]] = relationship(back_populates="movie")
+
+    @classmethod
+    def from_movie_info_entity(cls, movie_info: entities.movie.MovieInfo) -> t.Self:
+        return cls(title=movie_info.title, duration=movie_info.duration)
+
+    def to_movie_entity(self) -> entities.movie.Movie:
+        return entities.movie.Movie(id=self.id, title=self.title, duration=self.duration)
 
 
 class MovieRelationMixin:

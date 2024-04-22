@@ -3,9 +3,9 @@ from domain import entities
 from . import interfaces
 
 
-class DeleteMovieUsecase:
+class GetAllMoviesUsecase:
     def __init__(self, movie_repository: interfaces.MovieRepository) -> None:
         self._movie_repository = movie_repository
 
-    async def execute(self, movie_id: entities.movie.MovieId) -> None:
-        await self._movie_repository.delete_movie(id_entity=movie_id)
+    async def execute(self) -> list[entities.movie.Movie]:
+        return await self._movie_repository.get_all_movies()

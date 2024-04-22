@@ -10,3 +10,7 @@ class MovieId(StrictBaseModel):
 class MovieInfo(StrictBaseModel):
     title: str
     duration: timedelta
+
+
+class Movie(MovieId, MovieInfo):
+    pass
