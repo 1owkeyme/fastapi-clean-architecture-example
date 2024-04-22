@@ -1,17 +1,18 @@
 import typing as t
-from enum import StrEnum
+from enum import StrEnum, unique
 
 from common import StrictBaseModel
 from domain import entities
 
 
+@unique
 class TokenType(StrEnum):
-    BEARER = "Bearer"
+    BEARER = "bearer"
 
 
 class TokenInfo(StrictBaseModel):
-    access_token: str
     token_type: TokenType = TokenType.BEARER
+    access_token: str
 
     @classmethod
     def from_access_token_entity(cls, entity: entities.auth.AccessToken) -> t.Self:

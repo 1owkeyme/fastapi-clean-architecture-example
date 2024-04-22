@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt  # type:ignore[import-untyped]
 from pydantic import ValidationError
@@ -9,8 +9,8 @@ from domain.usecases.interfaces import security as security_interfaces
 
 
 class TokenPayload(StrictBaseModel):
-    exp: timedelta
-    sub: int
+    exp: datetime
+    sub: str
 
 
 class JWTService(security_interfaces.TokenService):
@@ -20,8 +20,8 @@ class JWTService(security_interfaces.TokenService):
         expires_delta: timedelta,
         secret: str,
     ) -> entities.auth.AccessToken:
-        expire = datetime.now(UTC) + expires_delta
-        to_encode = {"exp": expire, "sub": user_id.id}
+        expire = datetime.now(timezone.utc) + expires_delta
+        to_encode = TokenPayload(exp=expire, sub=str(user_id.id)).model_dump()
         return jwt.encode(to_encode, secret, algorithm=security_interfaces.token.ALGORITHM)  # type:ignore[no-any-return] # since jose [import-untyped]
 
     @staticmethod
@@ -32,4 +32,4 @@ class JWTService(security_interfaces.TokenService):
         except (JWTError, ValidationError) as exc:
             raise security_interfaces.token_errors.InvalidTokenError from exc
 
-        return entities.user.UserId(id=token_payload.sub)
+        return entities.user.UserId(id=int(token_payload.sub))

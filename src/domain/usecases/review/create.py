@@ -13,5 +13,8 @@ class CreateReviewUsecase:
         movie_id: entities.movie.MovieId,
         review_contents: entities.review.ReviewContents,
     ) -> entities.review.ReviewId:
-        review_id = await self._review_repository.create_review(user_id=user_id, movie_id=movie_id, contents=review_contents)
-        return
+        return await self._review_repository.create_review(
+            user_id_entity=user_id,
+            movie_id_entity=movie_id,
+            contents_entity=review_contents,
+        )

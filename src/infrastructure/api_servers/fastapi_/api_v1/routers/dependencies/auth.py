@@ -10,6 +10,8 @@ from . import usecases as usecases_dependencies
 
 
 __BearerTokenDependency = t.Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login"))]
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4NzQ1MjIsInN1YiI6OH0.Y3_VLZO9YX5hb4K_mW-x8gfrE7LFcittR3lKVaU0CV8
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM4NzQ1MjIsInN1YiI6OH0.Y3_VLZO9YX5hb4K_mW-x8gfrE7LFcittR3lKVaU0CV8
 
 
 async def __get_current_user_id(

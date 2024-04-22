@@ -6,6 +6,7 @@ from domain import usecases
 
 from ..base import APIServerBase
 from . import api_v1
+from .api_v1 import EXCEPTION_TO_HANDLER as API_V1_EXCEPTION_TO_HANDLER
 
 
 def _generate_unique_id_function(route: APIRoute) -> str:
@@ -33,6 +34,7 @@ class FastAPIServer(APIServerBase):
 
     def _get_asgi_app(self) -> FastAPI:
         app = FastAPI(
+            exception_handlers=API_V1_EXCEPTION_TO_HANDLER,
             title=self.__app_title,
             openapi_url=self.__openapi_url,
             generate_unique_id_function=_generate_unique_id_function,

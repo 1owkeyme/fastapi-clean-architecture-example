@@ -6,6 +6,7 @@ from common import StrictBaseModel, stars
 from domain import entities
 
 from .movie import Movie
+from .users import UserPublic
 
 
 class ReviewId(StrictBaseModel):
@@ -14,9 +15,6 @@ class ReviewId(StrictBaseModel):
     @classmethod
     def from_review_id_entity(cls, review_id_entity: entities.review.ReviewId) -> t.Self:
         return cls(id=review_id_entity.id)
-
-    def to_review_id_entity(self) -> entities.review.ReviewId:
-        return entities.review.ReviewId(id=self.id)
 
 
 class ReviewContents(StrictBaseModel):
@@ -28,14 +26,43 @@ class ReviewContents(StrictBaseModel):
     text: str | None = None
 
 
-class ReviewForUser(ReviewId, ReviewContents):
+class ReviewMovieContents(StrictBaseModel):
     movie: Movie
 
+
+class ReviewUserContents(StrictBaseModel):
+    user: UserPublic
+
+
+class ReviewForUser(ReviewId, ReviewContents, ReviewMovieContents):
     @classmethod
     def from_entity(cls, entity: entities.review.ReviewForUser) -> t.Self:
         return cls(
             id=entity.id,
             stars=entity.stars,
             text=entity.text,
-            movie=Movie.from_entity(movie=entity.movie),
+            movie=Movie.from_movie_entity(movie=entity.movie),
+        )
+
+
+class ReviewForMovie(ReviewId, ReviewContents, ReviewUserContents):
+    @classmethod
+    def from_entity(cls, entity: entities.review.ReviewForMovie) -> t.Self:
+        return cls(
+            id=entity.id,
+            stars=entity.stars,
+            text=entity.text,
+            user=UserPublic.from_entity(entity=entity.user),
+        )
+
+
+class Review(ReviewId, ReviewContents, ReviewUserContents, ReviewMovieContents):
+    @classmethod
+    def from_entity(cls, entity: entities.review.Review) -> t.Self:
+        return cls(
+            id=entity.id,
+            stars=entity.stars,
+            text=entity.text,
+            user=UserPublic.from_entity(entity.user),
+            movie=Movie.from_entity(entity.movie),
         )

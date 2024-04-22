@@ -1,8 +1,4 @@
-import typing as t
-
-from fastapi import APIRouter, Path
-
-from infrastructure.api_servers import responses
+from fastapi import APIRouter
 
 from . import dependencies, schemas, views
 
@@ -10,56 +6,62 @@ from . import dependencies, schemas, views
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
 async def get_all_movies(
-    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
-) -> views.responses.GetAllUsersResponse:
-    user_public_entities = await get_all_users_usecase.execute()
+    get_all_movies_usecase: dependencies.usecases.GetAllMoviesUsecaseDependency,
+) -> views.responses.movie.GetAllMoviesResponse:
+    movie_entities = await get_all_movies_usecase.execute()
 
-    users = [views.users.UserPublic.from_entity(user_public_entity) for user_public_entity in user_public_entities]
+    movies = [views.movie.Movie.from_entity(movie_entity) for movie_entity in movie_entities]
 
-    return views.responses.GetAllUsersResponse.new(users=users)
+    return views.responses.movie.GetAllMoviesResponse.new(movies=movies)
 
 
-@router.get("/{id}")
+@router.get("/{id}", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
 async def get_movie_by_id(
-    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
-    id_: t.Annotated[int, Path(alias="id", gt=0)],
-) -> views.responses.GetAllUsersResponse:
-    user_public_entities = await get_all_users_usecase.execute()
-
-    users = [views.users.UserPublic.from_entity(user_public_entity) for user_public_entity in user_public_entities]
-
-    return views.responses.GetAllUsersResponse.new(users=users)
+    get_movie_by_id_usecase: dependencies.usecases.GetMovieByIdUsecaseDependency,
+    movie_id: dependencies.path.MovieIdFromPathDependency,
+) -> views.responses.movie.GetMovieByIdResponse:
+    movie_entity = await get_movie_by_id_usecase.execute(movie_id.to_entity())
+    movie = views.movie.Movie.from_entity(movie_entity)
+    return views.responses.movie.GetMovieByIdResponse.new(movie=movie)
 
 
-@router.post("/")
+@router.post("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def create_movie(
     create_movie_usecase: dependencies.usecases.CreateMovieUsecaseDependency,
     create_movie_schema: schemas.movies.CreateMovieSchema,
-) -> responses.EmptyResponse:
+) -> views.responses.movie.CreateMovieResponse:
     movie_info_entity = create_movie_schema.to_movie_info_entity()
 
-    await create_movie_usecase.execute(movie_info=movie_info_entity)
+    movie_id_entity = await create_movie_usecase.execute(movie_info=movie_info_entity)
 
-    return responses.EmptyResponse.new()
+    movie_id = views.movie.MovieId.from_entity(movie_id_entity)
+
+    return views.responses.movie.CreateMovieResponse.new(movie_id)
 
 
-@router.delete("/")
+@router.delete("/{id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def delete_movie(
     delete_movie_usecase: dependencies.usecases.DeleteMovieUsecaseDependency,
-    delete_movie_schema: schemas.movies.DeleteMovieSchema,
-) -> responses.EmptyResponse:
-    movie_id_enitity = delete_movie_schema.to_movie_id_entity()
+    movie_id: dependencies.path.MovieIdFromPathDependency,
+) -> views.responses.movie.DeleteMovieResponse:
+    deleted_movie_id_entity = await delete_movie_usecase.execute(movie_id=movie_id.to_entity())
 
-    await delete_movie_usecase.execute(movie_id=movie_id_enitity)
+    deleted_movie_id = views.movie.MovieId.from_entity(deleted_movie_id_entity)
 
-    return responses.EmptyResponse.new()
+    return views.responses.movie.DeleteMovieResponse.new(deleted_movie_id)
 
 
-@router.get("/{id}/reviews")
+@router.get("/{id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
 async def get_all_movie_reviews(
-    get_all_user_reviews_usecase: dependencies.usecases.GetAllUserReviewsUsecaseDependency,
-    id_: t.Annotated[int, Path(alias="id", gt=0)],
-) -> views.responses.CreateUserResponse:
-    return views.responses.CreateUserResponse.new(user_id=user_id)
+    get_all_movie_reviews_usecase: dependencies.usecases.GetAllMovieReviewsUsecaseDependency,
+    movie_id: dependencies.path.MovieIdFromPathDependency,
+) -> views.responses.movie.GetAllMovieReviewsResponse:
+    review_for_movie_entities = await get_all_movie_reviews_usecase.execute(movie_id.to_entity())
+
+    reviews_for_movie = [
+        views.reviews.ReviewForMovie.from_entity(review_for_movie_entity)
+        for review_for_movie_entity in review_for_movie_entities
+    ]
+    return views.responses.movie.GetAllMovieReviewsResponse.new(reviews_for_movie=reviews_for_movie)

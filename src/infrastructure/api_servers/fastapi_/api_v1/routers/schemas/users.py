@@ -6,6 +6,8 @@ from pydantic import Field
 from common import StrictBaseModel
 from domain import entities
 
+from .id_ import IdSchema
+
 
 class UserCredentialsSchema(StrictBaseModel):
     username: str = Field(examples=["Frank"])
@@ -24,9 +26,7 @@ class UserCredentialsSchema(StrictBaseModel):
         )
 
 
-class UserIdSchema(StrictBaseModel):
-    id: int
-
+class UserIdSchema(IdSchema):
     def to_entity(self) -> entities.user.UserId:
         return entities.user.UserId(id=self.id)
 

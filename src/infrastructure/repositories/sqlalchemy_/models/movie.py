@@ -31,6 +31,9 @@ class Movie(Base):
     def to_movie_entity(self) -> entities.movie.Movie:
         return entities.movie.Movie(id=self.id, title=self.title, duration=self.duration)
 
+    def to_movie_id_entity(self) -> entities.movie.MovieId:
+        return entities.movie.MovieId(id=self.id)
+
 
 class MovieRelationMixin:
     _movie_id_unique: bool = False

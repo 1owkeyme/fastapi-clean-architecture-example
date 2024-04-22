@@ -11,7 +11,6 @@ from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
 from settings import get_app_settings
 
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +20,7 @@ class ExitCode(IntEnum):
     FAILURE = 1
 
 
-__MAX_ATTEMPTS = 60 * 5  # 5 minutes
+__MAX_ATTEMPTS = 60 * 5
 __WAIT_INTERVAL = 1
 
 
@@ -43,7 +42,8 @@ def get_pong(get_all_users_usecase: usecases.user.GetAllUsersUsecase) -> None:
 def main() -> int:
     try:
         settings = get_app_settings()
-
+        settings.configure_logging()
+        
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         jwt_service = services.security.token.JWTService()
 
@@ -57,19 +57,27 @@ def main() -> int:
             access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
         )
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service initialization"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     try:
         get_pong(user_usecases_builder.construct_get_all_users_usecase())
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service process"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
+    msg_info = "Initilization service has started"
+    logger.info(msg_info)
+
     exit_code = main()
+
+    msg_info = "Initilization service has finished"
+    logger.info(msg_info)
 
     os._exit(exit_code)

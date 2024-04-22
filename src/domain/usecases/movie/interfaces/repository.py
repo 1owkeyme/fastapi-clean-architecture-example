@@ -13,11 +13,11 @@ class MovieRepository(ABC):
         pass
 
     @abstractmethod
-    async def create_movie(self, info_entity: entities.movie.MovieInfo) -> None:
+    async def create_movie(self, info_entity: entities.movie.MovieInfo) -> entities.movie.MovieId:
         pass
 
     @abstractmethod
-    async def delete_movie(self, id_entity: entities.movie.MovieId) -> None:
+    async def delete_movie(self, id_entity: entities.movie.MovieId) -> entities.movie.MovieId:
         pass
 
     @abstractmethod

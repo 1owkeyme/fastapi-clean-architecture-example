@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from enum import IntEnum, unique
 
@@ -6,6 +7,9 @@ import services
 from domain import entities, usecases
 from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
 from settings import get_app_settings
+
+
+logger = logging.getLogger(__name__)
 
 
 @unique
@@ -17,6 +21,7 @@ class ExitCode(IntEnum):
 def main() -> int:
     try:
         settings = get_app_settings()
+        settings.configure_logging()
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         jwt_service = services.security.token.JWTService()
@@ -35,19 +40,27 @@ def main() -> int:
             password=settings.FIRST_SUPER_USER_PASSWORD,
         )
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service initialization"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     try:
         asyncio.run(user_usecases_builder.construct_create_user_usecase().execute(first_super_user_plain_credentials))
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service process"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
+    msg_info = "Database initialization service has started"
+    logger.info(msg_info)
+
     exit_code = main()
+
+    msg_info = "Database initialization service has finished"
+    logger.info(msg_info)
 
     os._exit(exit_code)

@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload, selectinload
 
 from domain import entities, usecases
 
@@ -108,7 +108,7 @@ class SQLAlchemy(
 
         return [movie.to_movie_entity() for movie in movies]
 
-    async def create_movie(self, info_entity: entities.movie.MovieInfo) -> None:
+    async def create_movie(self, info_entity: entities.movie.MovieInfo) -> entities.movie.MovieId:
         movie = models.Movie.from_movie_info_entity(info_entity)
         async with self._get_scoped_session() as session:
             session.add(movie)
@@ -116,24 +116,34 @@ class SQLAlchemy(
                 await session.commit()
             except IntegrityError:
                 raise usecases.movie.interfaces.repository_errors.MovieAlreadyExistsError from None
+        return movie.to_movie_id_entity()
 
-    async def delete_movie(self, id_entity: entities.movie.MovieId) -> None:
+    async def delete_movie(self, id_entity: entities.movie.MovieId) -> entities.movie.MovieId:
         async with self._get_scoped_session() as session:
             if (movie := await session.get(models.Movie, id_entity.id)) is not None:
                 await session.delete(movie)
             else:
                 raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
             await session.commit()
+        return id_entity
 
     async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.ReviewForMovie]:
         stmt = select(models.Movie).options(selectinload(models.Movie.reviews)).where(models.Movie.id == id_entity.id)
         async with self._get_scoped_session() as session:
             if (movie := await session.scalar(stmt)) is not None:
-                return [review.to_review_entity() for review in movie.reviews]
+                return [review.to_review_for_movie_entity() for review in movie.reviews]
             raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
 
-    async def get_review_by_id(self, id_entity: entities.review.ReviewId) -> None:
-        pass  # TODO:
+    async def get_review_by_id(self, id_entity: entities.review.ReviewId) -> entities.review.Review:
+        stmt = (
+            select(models.Review)
+            .options(joinedload(models.Review.user), joinedload(models.Review.movie))
+            .where(models.Review.id == id_entity.id)
+        )
+        async with self._get_scoped_session() as session:
+            if (review := await session.scalar(stmt)) is not None:
+                return review.to_entity()
+            raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
 
     async def create_review(
         self,
@@ -162,10 +172,11 @@ class SQLAlchemy(
 
         return review.to_review_id_entity()
 
-    async def delete_review(self, id_entity: entities.review.ReviewId) -> None:
+    async def delete_review(self, id_entity: entities.review.ReviewId) -> entities.review.ReviewId:
         async with self._get_scoped_session() as session:
             if (review := await session.get(models.Review, id_entity.id)) is not None:
                 await session.delete(review)
             else:
                 raise usecases.review.interfaces.repository_errors.ReviewNotFoundError
             await session.commit()
+        return id_entity

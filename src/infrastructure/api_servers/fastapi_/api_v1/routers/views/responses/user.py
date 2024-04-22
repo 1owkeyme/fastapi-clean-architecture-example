@@ -1,18 +1,17 @@
 import typing as t
 
 from common import StrictBaseModel
-from infrastructure.api_servers import responses
 
-from .auth import TokenInfo
-from .reviews import ReviewForUser
-from .users import UserId, UserPublic
+from ..reviews import ReviewForUser
+from ..users import UserId, UserPublic
+from . import base
 
 
 class GetAllUsersResult(StrictBaseModel):
     users: list[UserPublic]
 
 
-class GetAllUsersResponse(responses.base.SuccessResponse):
+class GetAllUsersResponse(base.SuccessResponse):
     result: GetAllUsersResult
 
     @classmethod
@@ -24,7 +23,7 @@ class GetUserByIdResult(StrictBaseModel):
     user: UserPublic
 
 
-class GetUserByIdResponse(responses.base.SuccessResponse):
+class GetUserByIdResponse(base.SuccessResponse):
     result: GetUserByIdResult
 
     @classmethod
@@ -36,7 +35,7 @@ class CreateUserResult(UserId):
     pass
 
 
-class CreateUserResponse(responses.base.SuccessResponse):
+class CreateUserResponse(base.SuccessResponse):
     result: CreateUserResult
 
     @classmethod
@@ -48,21 +47,9 @@ class GetAllUserReviewsResult(StrictBaseModel):
     reviews: list[ReviewForUser]
 
 
-class GetAllUserReviewsResponse(responses.base.SuccessResponse):
+class GetAllUserReviewsResponse(base.SuccessResponse):
     result: GetAllUserReviewsResult
 
     @classmethod
     def new(cls, reviews_for_user: list[ReviewForUser]) -> t.Self:
         return cls(result=GetAllUserReviewsResult(reviews=reviews_for_user))
-
-
-class LoginResult(StrictBaseModel):
-    token_info: TokenInfo
-
-
-class LoginResponse(responses.base.SuccessResponse):
-    result: LoginResult
-
-    @classmethod
-    def new(cls, token_info: TokenInfo) -> t.Self:
-        return cls(result=LoginResult(token_info=token_info))

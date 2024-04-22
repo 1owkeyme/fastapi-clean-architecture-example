@@ -33,6 +33,15 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
     stars_10x: Mapped[int] = mapped_column(Integer())
     text: Mapped[str | None] = mapped_column(Text())
 
+    def to_entity(self) -> entities.review.Review:
+        return entities.review.Review(
+            id=self.id,
+            movie=self.movie.to_movie_entity(),
+            user=self.user.to_user_public_entity(),
+            stars=self.stars_10x / 10,
+            text=self.text,
+        )
+
     def to_review_id_entity(self) -> entities.review.ReviewId:
         return entities.review.ReviewId(id=self.id)
 
@@ -42,6 +51,14 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
             stars=self.stars_10x / 10,
             text=self.text,
             movie=self.movie.to_movie_entity(),
+        )
+
+    def to_review_for_movie_entity(self) -> entities.review.ReviewForMovie:
+        return entities.review.ReviewForMovie(
+            id=self.id,
+            stars=self.stars_10x / 10,
+            text=self.text,
+            user=self.user.to_user_public_entity(),
         )
 
 

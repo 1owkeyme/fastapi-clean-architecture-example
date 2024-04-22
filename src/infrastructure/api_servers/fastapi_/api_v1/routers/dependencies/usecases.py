@@ -138,6 +138,15 @@ def __get_get_movie_by_id_usecase() -> usecases.movie.GetMovieByIdUsecase:
 GetMovieByIdUsecaseDependency = t.Annotated[usecases.movie.GetMovieByIdUsecase, Depends(__get_get_movie_by_id_usecase)]
 
 
+def __get_get_review_by_id_usecase() -> usecases.review.GetReviewByIdUsecase:
+    return __get_review_usecases_builder().construct_get_review_by_id_usecase()
+
+
+GetReviewByIdUsecaseDependency = t.Annotated[
+    usecases.review.GetReviewByIdUsecase, Depends(__get_get_review_by_id_usecase)
+]
+
+
 def __get_create_review_usecase() -> usecases.review.CreateReviewUsecase:
     return __get_review_usecases_builder().construct_create_review_usecase()
 

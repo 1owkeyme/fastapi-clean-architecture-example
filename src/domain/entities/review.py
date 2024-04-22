@@ -19,9 +19,21 @@ class ReviewContents(StrictBaseModel):
     text: str | None = None
 
 
-class ReviewForUser(ReviewId, ReviewContents):
+class ReviewMovieContents(StrictBaseModel):
     movie: Movie
 
 
-class ReviewForMovie(ReviewId, ReviewContents):
+class ReviewUserContents(StrictBaseModel):
     user: UserPublic
+
+
+class ReviewForUser(ReviewId, ReviewContents, ReviewMovieContents):
+    movie: Movie
+
+
+class ReviewForMovie(ReviewId, ReviewContents, ReviewUserContents):
+    user: UserPublic
+
+
+class Review(ReviewId, ReviewContents, ReviewUserContents, ReviewMovieContents):
+    pass

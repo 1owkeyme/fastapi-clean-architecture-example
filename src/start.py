@@ -1,3 +1,4 @@
+import logging
 import os
 from enum import IntEnum, unique
 
@@ -6,6 +7,9 @@ from domain import usecases
 from infrastructure.api_servers.fastapi_ import FastAPIServer
 from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
 from settings import get_app_settings
+
+
+logger = logging.getLogger(__name__)
 
 
 @unique
@@ -17,6 +21,7 @@ class ExitCode(IntEnum):
 def main() -> int:
     try:
         settings = get_app_settings()
+        settings.configure_logging()
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         jwt_service = services.security.token.JWTService()
@@ -43,13 +48,15 @@ def main() -> int:
             cors_origins=[str(origin) for origin in settings.CORS_ORIGINS],
         )
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service initialization"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     try:
-        api_server.run(1111)
+        api_server.run(port=settings.SERVING_PORT)
     except Exception:
-        # TODO: logging
+        msg_crit = "Got unhandled error during service process"
+        logger.critical(msg_crit, exc_info=True)
         return ExitCode.FAILURE
 
     return ExitCode.SUCCESS

@@ -24,6 +24,7 @@ class AppSettings(BaseAppSettings):
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
+    SERVING_PORT: int = 4343
     CORS_ORIGINS: t.Annotated[list[AnyUrl], AfterValidator(remove_trailing_slashes)] = Field(default_factory=list)
 
     POSTGRES_HOST: str
@@ -48,7 +49,6 @@ class AppSettings(BaseAppSettings):
     FIRST_SUPER_USER_PASSWORD: str
 
     logging_level: int = logging.INFO
-    loggers: tuple[str, ...] = ()
 
     def configure_logging(self) -> None:
-        pass
+        logging.basicConfig(level=self.logging_level)
