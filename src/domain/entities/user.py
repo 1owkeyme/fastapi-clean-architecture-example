@@ -23,7 +23,7 @@ class SafeCredentials(Username):
     def from_plain_credentials(
         cls,
         plain_credentials: PlainCredentials,
-        hash_service: security_interfaces.HashService,
+        hash_service: security_interfaces.PasswordService,
     ) -> t.Self:
         return cls(
             username=plain_credentials.username,

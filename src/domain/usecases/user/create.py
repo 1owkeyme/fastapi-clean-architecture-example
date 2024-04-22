@@ -8,7 +8,7 @@ class CreateUserUsecase:
     def __init__(
         self,
         user_repository: interfaces.UserRepository,
-        hash_service: security_interfaces.HashService,
+        hash_service: security_interfaces.PasswordService,
     ) -> None:
         self._user_repository = user_repository
         self._hash_service = hash_service

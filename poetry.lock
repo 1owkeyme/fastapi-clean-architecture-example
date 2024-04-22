@@ -446,6 +446,24 @@ pipenv = ["pipenv"]
 poetry = ["poetry"]
 
 [[package]]
+name = "ecdsa"
+version = "0.19.0"
+description = "ECDSA cryptographic signature library (pure python)"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.6"
+files = [
+    {file = "ecdsa-0.19.0-py2.py3-none-any.whl", hash = "sha256:2cea9b88407fdac7bbeca0833b189e4c9c53f2ef1e1eaa29f6224dbc809b707a"},
+    {file = "ecdsa-0.19.0.tar.gz", hash = "sha256:60eaad1199659900dd0af521ed462b793bbdf867432b3948e87416ae4caf6bf8"},
+]
+
+[package.dependencies]
+six = ">=1.9.0"
+
+[package.extras]
+gmpy = ["gmpy"]
+gmpy2 = ["gmpy2"]
+
+[[package]]
 name = "fastapi"
 version = "0.110.2"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -785,6 +803,17 @@ files = [
 ]
 
 [[package]]
+name = "pyasn1"
+version = "0.6.0"
+description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyasn1-0.6.0-py2.py3-none-any.whl", hash = "sha256:cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473"},
+    {file = "pyasn1-0.6.0.tar.gz", hash = "sha256:3a35ab2c4b5ef98e17dfdec8ab074046fbda76e281c5a706ccd82328cfc8f64c"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
@@ -954,6 +983,42 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-jose"
+version = "3.3.0"
+description = "JOSE implementation in Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-jose-3.3.0.tar.gz", hash = "sha256:55779b5e6ad599c6336191246e95eb2293a9ddebd555f796a65f838f07e5d78a"},
+    {file = "python_jose-3.3.0-py2.py3-none-any.whl", hash = "sha256:9b1376b023f8b298536eedd47ae1089bcdb848f1535ab30555cd92002d78923a"},
+]
+
+[package.dependencies]
+cryptography = {version = ">=3.4.0", optional = true, markers = "extra == \"cryptography\""}
+ecdsa = "!=0.15"
+pyasn1 = "*"
+rsa = "*"
+
+[package.extras]
+cryptography = ["cryptography (>=3.4.0)"]
+pycrypto = ["pyasn1", "pycrypto (>=2.6.0,<2.7.0)"]
+pycryptodome = ["pyasn1", "pycryptodome (>=3.3.1,<4.0.0)"]
+
+[[package]]
+name = "python-multipart"
+version = "0.0.9"
+description = "A streaming multipart parser for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "python_multipart-0.0.9-py3-none-any.whl", hash = "sha256:97ca7b8ea7b05f977dc3849c3ba99d51689822fab725c3703af7c866a0c2b215"},
+    {file = "python_multipart-0.0.9.tar.gz", hash = "sha256:03f54688c663f1b7977105f021043b0793151e4cb1c1a9d4a11fc13d622c4026"},
+]
+
+[package.extras]
+dev = ["atomicwrites (==1.4.1)", "attrs (==23.2.0)", "coverage (==7.4.1)", "hatch", "invoke (==2.2.0)", "more-itertools (==10.2.0)", "pbr (==6.0.0)", "pluggy (==1.4.0)", "py (==1.11.0)", "pytest (==8.0.0)", "pytest-cov (==4.1.0)", "pytest-timeout (==2.2.0)", "pyyaml (==6.0.1)", "ruff (==0.2.1)"]
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -991,6 +1056,20 @@ pygments = ">=2.13.0,<3.0.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
+
+[[package]]
+name = "rsa"
+version = "4.9"
+description = "Pure-Python RSA implementation"
+optional = false
+python-versions = ">=3.6,<4"
+files = [
+    {file = "rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7"},
+    {file = "rsa-4.9.tar.gz", hash = "sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21"},
+]
+
+[package.dependencies]
+pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "ruamel-yaml"
@@ -1174,6 +1253,17 @@ files = [
 ]
 
 [[package]]
+name = "six"
+version = "1.16.0"
+description = "Python 2 and 3 compatibility utilities"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
+    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+]
+
+[[package]]
 name = "sniffio"
 version = "1.3.1"
 description = "Sniff out which async library your code is running under"
@@ -1354,4 +1444,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f7f510646936e37be0b79db3f4192504c8a341719982a7604f16e8e7cbfb1709"
+content-hash = "70efcd50ef744448640c142019f6216903c8662e0bf6830a26bf26b32a9536a1"

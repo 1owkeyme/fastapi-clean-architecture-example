@@ -20,7 +20,7 @@ async def get_all_users(
 @router.get("/{id}")
 async def get_user_by_id(
     get_user_by_id_usecase: dependencies.usecases.GetUserByIdUsecaseDependency,
-    user_id: dependencies.path.GetUserIdFromPathDependency,
+    user_id: dependencies.path.UserIdFromPathDependency,
 ) -> views.responses.GetUserByIdResponse:
     user_id_entity = user_id.to_entity()
 
@@ -64,7 +64,7 @@ async def delete_user(
 @router.get("/{id}/reviews")
 async def get_all_user_reviews(
     get_all_user_reviews_usecase: dependencies.usecases.GetAllUserReviewsUsecaseDependency,
-    user_id: dependencies.path.GetUserIdFromPathDependency,
+    user_id: dependencies.path.UserIdFromPathDependency,
 ) -> views.responses.GetAllUserReviewsResponse:
     user_id_entity = user_id.to_entity()
 

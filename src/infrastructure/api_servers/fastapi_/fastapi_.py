@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
+from fastapi.security import OAuth2PasswordBearer
 from starlette.middleware.cors import CORSMiddleware
 
 from domain import usecases
@@ -51,6 +52,7 @@ class FastAPIServer(APIServerBase):
             user_usecases_builder=self.__user_usecases_builder,
             movie_usecases_builder=self.__movie_usecases_builder,
             review_usecases_builder=self.__review_usecases_builder,
+            reusable_oauth2=OAuth2PasswordBearer(tokenUrl=f"{self.__api_v1_prefix}/access-token"),
         )
 
         app.include_router(api_v1_router, prefix=self.__api_v1_prefix)

@@ -74,6 +74,24 @@ AuthenticateUserUsecaseDependency = t.Annotated[
 ]
 
 
+def __get_create_user_access_token_usecase() -> usecases.user.CreateUserAccessTokenUsecase:
+    return __get_user_usecases_builder().construct_create_user_access_token_usecase()
+
+
+CreateUserAccessTokenUsecaseDependency = t.Annotated[
+    usecases.user.CreateUserAccessTokenUsecase, Depends(__get_create_user_access_token_usecase)
+]
+
+
+def __get_read_user_access_token_usecase() -> usecases.user.ReadUserAccessTokenUsecase:
+    return __get_user_usecases_builder().construct_read_user_access_token_usecase()
+
+
+ReadUserAccessTokenUsecaseDependency = t.Annotated[
+    usecases.user.ReadUserAccessTokenUsecase, Depends(__get_read_user_access_token_usecase)
+]
+
+
 def __get_create_movie_usecase() -> usecases.movie.CreateMovieUsecase:
     return __get_movie_usecases_builder().construct_create_movie_usecase()
 

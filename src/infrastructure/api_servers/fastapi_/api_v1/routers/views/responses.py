@@ -3,6 +3,7 @@ import typing as t
 from common import StrictBaseModel
 from infrastructure.api_servers import responses
 
+from .auth import TokenInfo
 from .reviews import ReviewForUser
 from .users import UserId, UserPublic
 
@@ -53,3 +54,15 @@ class GetAllUserReviewsResponse(responses.base.SuccessResponse):
     @classmethod
     def new(cls, reviews_for_user: list[ReviewForUser]) -> t.Self:
         return cls(result=GetAllUserReviewsResult(reviews=reviews_for_user))
+
+
+class LoginResult(StrictBaseModel):
+    token_info: TokenInfo
+
+
+class LoginResponse(responses.base.SuccessResponse):
+    result: LoginResult
+
+    @classmethod
+    def new(cls, token_info: TokenInfo) -> t.Self:
+        return cls(result=LoginResult(token_info=token_info))

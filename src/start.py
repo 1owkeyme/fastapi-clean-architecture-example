@@ -18,15 +18,20 @@ def main() -> int:
     try:
         settings = get_app_settings()
 
-        sha256_hash_service = services.security.hash_.BCryptHashService()
-        repository = SQLAlchemy(str(settings.POSTGRES_DSN))
+        bcrypt_password_service = services.security.password.BCryptPasswordService()
+        jwt_service = services.security.token.JWTService()
+
+        sql_alchemy = SQLAlchemy(str(settings.POSTGRES_DSN))
 
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
-            user_repository=repository,
-            hash_service=sha256_hash_service,
+            user_repository=sql_alchemy,
+            hash_service=bcrypt_password_service,
+            token_service=jwt_service,
+            secret=settings.SECRET_KEY,
+            access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
         )
-        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=repository)
-        review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=repository)
+        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=sql_alchemy)
+        review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=sql_alchemy)
 
         api_server = FastAPIServer(
             user_usecases_builder=user_usecases_builder,

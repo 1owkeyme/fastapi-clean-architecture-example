@@ -1,3 +1,4 @@
+from . import auth as auth
 from . import movie as movie
 from . import responses as responses
 from . import reviews as reviews

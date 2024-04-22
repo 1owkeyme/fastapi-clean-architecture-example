@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class HashService(ABC):
+class PasswordService(ABC):
     @staticmethod
     @abstractmethod
     def hash_utf8_password_to_hex(password: str) -> str:
