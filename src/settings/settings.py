@@ -5,13 +5,11 @@ from .app import AppSettings
 from .base import AppEnv, BaseAppSettings
 from .dev import DevAppSettings
 from .prod import ProdAppSettings
-from .test import TestAppSettings
 
 
 app_environment_to_settings_cls: dict[AppEnv, t.Type[AppSettings]] = {
     AppEnv.DEV: DevAppSettings,
     AppEnv.PROD: ProdAppSettings,
-    AppEnv.TEST: TestAppSettings,
 }
 
 

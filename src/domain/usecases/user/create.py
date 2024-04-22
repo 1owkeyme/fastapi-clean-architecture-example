@@ -1,5 +1,5 @@
 from domain import entities
-from domain.interfaces import security as security_interfaces
+from domain.usecases.interfaces import security as security_interfaces
 
 from . import interfaces
 
@@ -14,9 +14,9 @@ class CreateUserUsecase:
         self._hash_service = hash_service
 
     async def execute(self, user_plain_credentials: entities.user.PlainCredentials) -> entities.user.UserId:
-        safe_credentials = entities.user.SafeCredentials.from_plain_credentials(
-            plain_credentials=user_plain_credentials,
-            hash_service=self._hash_service,
+        safe_credentials = entities.user.SafeCredentials(
+            username=user_plain_credentials.username,
+            hashed_password_hex=self._hash_service.hash_utf8_password_to_hex(user_plain_credentials.password),
         )
 
         return await self._user_repository.create_user(safe_credentials_entity=safe_credentials)

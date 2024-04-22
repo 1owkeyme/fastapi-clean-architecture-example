@@ -1,5 +1,5 @@
 from domain import entities
-from domain.interfaces import security as security_interfaces
+from domain.usecases.interfaces import security as security_interfaces
 
 from . import interfaces
 

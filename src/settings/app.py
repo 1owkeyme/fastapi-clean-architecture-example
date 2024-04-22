@@ -44,6 +44,9 @@ class AppSettings(BaseAppSettings):
             path=self.POSTGRES_DB,
         )
 
+    FIRST_SUPER_USER_USERNAME: str
+    FIRST_SUPER_USER_PASSWORD: str
+
     logging_level: int = logging.INFO
     loggers: tuple[str, ...] = ()
 

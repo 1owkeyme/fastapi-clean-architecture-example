@@ -1,0 +1,75 @@
+import asyncio
+import logging
+import os
+from enum import IntEnum, unique
+
+from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+
+import services
+from domain import usecases
+from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
+from settings import get_app_settings
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@unique
+class ExitCode(IntEnum):
+    SUCCESS = 0
+    FAILURE = 1
+
+
+__MAX_ATTEMPTS = 60 * 5  # 5 minutes
+__WAIT_INTERVAL = 1
+
+
+@retry(
+    stop=stop_after_attempt(__MAX_ATTEMPTS),
+    wait=wait_fixed(__WAIT_INTERVAL),
+    before=before_log(logger, logging.INFO),
+    after=after_log(logger, logging.WARN),
+)
+def get_pong(get_all_users_usecase: usecases.user.GetAllUsersUsecase) -> None:
+    try:
+        asyncio.run(get_all_users_usecase.execute())
+    except Exception as exc:
+        msg_err = f"{exc}"
+        logger.error(msg_err)
+        raise
+
+
+def main() -> int:
+    try:
+        settings = get_app_settings()
+
+        bcrypt_password_service = services.security.password.BCryptPasswordService()
+        jwt_service = services.security.token.JWTService()
+
+        sql_alchemy = SQLAlchemy(str(settings.POSTGRES_DSN))
+
+        user_usecases_builder = usecases.user.UserUsecasesBuilder(
+            user_repository=sql_alchemy,
+            hash_service=bcrypt_password_service,
+            token_service=jwt_service,
+            secret=settings.SECRET_KEY,
+            access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+        )
+    except Exception:
+        # TODO: logging
+        return ExitCode.FAILURE
+
+    try:
+        get_pong(user_usecases_builder.construct_get_all_users_usecase())
+    except Exception:
+        # TODO: logging
+        return ExitCode.FAILURE
+
+    return ExitCode.SUCCESS
+
+
+if __name__ == "__main__":
+    exit_code = main()
+
+    os._exit(exit_code)

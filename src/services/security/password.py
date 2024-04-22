@@ -1,6 +1,6 @@
 import bcrypt
 
-from domain.interfaces import security as security_interfaces
+from domain.usecases.interfaces import security as security_interfaces
 
 
 class BCryptPasswordService(security_interfaces.PasswordService):

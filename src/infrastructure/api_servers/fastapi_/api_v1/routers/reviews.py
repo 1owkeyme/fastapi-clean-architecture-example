@@ -11,14 +11,11 @@ router = APIRouter()
 @router.get("/{id}")
 async def get_review_by_id(
     get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
-    id_: t.Annotated[int, Path(alias="id", gt=0)],
+    user_id: dependencies.path.UserIdFromPathDependency,
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
 
-    users = [
-        views.users.UserPublic.from_user_public_entity(user_public_entity)
-        for user_public_entity in user_public_entities
-    ]
+    users = [views.users.UserPublic.from_entity(user_public_entity) for user_public_entity in user_public_entities]
 
     return views.responses.GetAllUsersResponse.new(users=users)
 

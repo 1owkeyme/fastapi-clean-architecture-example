@@ -7,4 +7,5 @@ from .delete import DeleteUserUsecase as DeleteUserUsecase
 from .get_all import GetAllUsersUsecase as GetAllUsersUsecase
 from .get_all_reviews import GetAllUserReviewsUsecase as GetAllUserReviewsUsecase
 from .get_by_id import GetUserByIdUsecase as GetUserByIdUsecase
+from .is_super_user import IsUserSuperUserUsecase as IsUserSuperUserUsecase
 from .read_access_token import ReadUserAccessTokenUsecase as ReadUserAccessTokenUsecase

@@ -4,4 +4,3 @@ from .base import BaseAppSettings as BaseAppSettings
 from .dev import DevAppSettings as DevAppSettings
 from .prod import ProdAppSettings as ProdAppSettings
 from .settings import get_app_settings as get_app_settings
-from .test import TestAppSettings as TestAppSettings

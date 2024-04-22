@@ -92,6 +92,15 @@ ReadUserAccessTokenUsecaseDependency = t.Annotated[
 ]
 
 
+def __get_is_user_super_user_usecase() -> usecases.user.IsUserSuperUserUsecase:
+    return __get_user_usecases_builder().construct_is_user_super_user_usecase()
+
+
+IsUserSuperUserUsecaseDependency = t.Annotated[
+    usecases.user.IsUserSuperUserUsecase, Depends(__get_is_user_super_user_usecase)
+]
+
+
 def __get_create_movie_usecase() -> usecases.movie.CreateMovieUsecase:
     return __get_movie_usecases_builder().construct_create_movie_usecase()
 

@@ -6,7 +6,7 @@ from . import dependencies, schemas, views
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def get_all_users(
     get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
 ) -> views.responses.GetAllUsersResponse:
@@ -17,7 +17,7 @@ async def get_all_users(
     return views.responses.GetAllUsersResponse.new(users=users)
 
 
-@router.get("/{id}")
+@router.get("/{id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def get_user_by_id(
     get_user_by_id_usecase: dependencies.usecases.GetUserByIdUsecaseDependency,
     user_id: dependencies.path.UserIdFromPathDependency,
@@ -31,7 +31,7 @@ async def get_user_by_id(
     return views.responses.GetUserByIdResponse.new(user=user)
 
 
-@router.post("/")
+@router.post("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def create_user(
     create_user_usecase: dependencies.usecases.CreateUserUsecaseDependency,
     create_user_schema: schemas.users.CreateUserSchema,
@@ -46,7 +46,7 @@ async def create_user(
     return views.responses.CreateUserResponse.new(user_id=user_id)
 
 
-@router.delete("/")
+@router.delete("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
 async def delete_user(
     create_user_usecase: dependencies.usecases.CreateUserUsecaseDependency,
     create_user_schema: schemas.users.CreateUserSchema,
@@ -61,7 +61,7 @@ async def delete_user(
     return views.responses.CreateUserResponse.new(user_id=user_id)
 
 
-@router.get("/{id}/reviews")
+@router.get("/{id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
 async def get_all_user_reviews(
     get_all_user_reviews_usecase: dependencies.usecases.GetAllUserReviewsUsecaseDependency,
     user_id: dependencies.path.UserIdFromPathDependency,

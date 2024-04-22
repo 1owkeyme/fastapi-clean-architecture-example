@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from domain.interfaces import security as security_interfaces
+from domain.usecases.interfaces import security as security_interfaces
 
 from . import interfaces
 from .authenticate import AuthenticateUserUsecase
@@ -10,6 +10,7 @@ from .delete import DeleteUserUsecase
 from .get_all import GetAllUsersUsecase
 from .get_all_reviews import GetAllUserReviewsUsecase
 from .get_by_id import GetUserByIdUsecase
+from .is_super_user import IsUserSuperUserUsecase
 from .read_access_token import ReadUserAccessTokenUsecase
 
 
@@ -65,3 +66,6 @@ class UserUsecasesBuilder:
             token_service=self._token_serivice,
             secret=self._secret,
         )
+
+    def construct_is_user_super_user_usecase(self) -> IsUserSuperUserUsecase:
+        return IsUserSuperUserUsecase(user_repository=self._user_repository)

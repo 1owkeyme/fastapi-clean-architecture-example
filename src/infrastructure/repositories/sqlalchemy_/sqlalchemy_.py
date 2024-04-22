@@ -42,6 +42,14 @@ class SQLAlchemy(
                 return user.to_user_public_entity()
             raise usecases.user.interfaces.repository_errors.UserNotFoundError
 
+    async def get_user_private_by_id(self, id_entity: entities.user.UserId) -> entities.user.UserPrivate:
+        id_model = models.user.UserId.from_entity(id_entity)
+        stmt = select(models.User).where(models.User.id == id_model.id)
+        async with self._get_scoped_session() as session:
+            if (user := await session.scalar(stmt)) is not None:
+                return user.to_user_private_entity()
+            raise usecases.user.interfaces.repository_errors.UserNotFoundError
+
     async def get_user_private_by_username(self, username_entity: entities.user.Username) -> entities.user.UserPrivate:
         username_model = models.user.Username.from_entity(username_entity)
 
@@ -136,7 +144,7 @@ class SQLAlchemy(
         review_contents = models.review.ReviewContents.from_review_contents_entity(
             review_contents_entity=contents_entity
         )
-        user_id = models.user.UserId.from_user_id_entity(user_id_entity=user_id_entity)
+        user_id = models.user.UserId.from_entity(entity=user_id_entity)
         movie_id = models.movie.MovieId.from_movie_id_entity(movie_id_entity=movie_id_entity)
 
         review = models.Review(

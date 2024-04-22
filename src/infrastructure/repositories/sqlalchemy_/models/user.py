@@ -1,8 +1,8 @@
 import typing as t
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, false
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
-from sqlalchemy.types import String
+from sqlalchemy.types import Boolean, String
 
 from common import StrictBaseModel
 from domain import entities
@@ -20,6 +20,7 @@ class User(Base):
 
     username: Mapped[str] = mapped_column(String(32), unique=True)
     hashed_password_hex: Mapped[str] = mapped_column(String(120))
+    is_super_user: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
 
     reviews: Mapped[list["Review"]] = relationship(back_populates="user")
 
@@ -31,6 +32,7 @@ class User(Base):
             id=self.id,
             username=self.username,
             hashed_password_hex=self.hashed_password_hex,
+            is_super_user=self.is_super_user,
         )
 
     def to_user_id_entity(self) -> entities.user.UserId:
@@ -62,8 +64,8 @@ class UserId(StrictBaseModel):
     id: int
 
     @classmethod
-    def from_user_id_entity(cls, user_id_entity: entities.user.UserId) -> t.Self:
-        return cls(id=user_id_entity.id)
+    def from_entity(cls, entity: entities.user.UserId) -> t.Self:
+        return cls(id=entity.id)
 
 
 class Username(StrictBaseModel):

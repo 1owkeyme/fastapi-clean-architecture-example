@@ -30,6 +30,10 @@ class UserIdSchema(StrictBaseModel):
     def to_entity(self) -> entities.user.UserId:
         return entities.user.UserId(id=self.id)
 
+    @classmethod
+    def from_entity(cls, entity: entities.user.UserId) -> t.Self:
+        return cls(id=entity.id)
+
 
 class CreateUserSchema(UserCredentialsSchema):
     pass

@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from common import StrictBaseModel
 from domain import entities
-from domain.interfaces import security as security_interfaces
+from domain.usecases.interfaces import security as security_interfaces
 
 
 class TokenPayload(StrictBaseModel):
