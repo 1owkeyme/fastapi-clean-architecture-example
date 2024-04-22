@@ -25,12 +25,13 @@ def main() -> int:
             user_repository=repository,
             hash_service=sha256_hash_service,
         )
-
         moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=repository)
+        review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=repository)
 
         api_server = FastAPIServer(
             user_usecases_builder=user_usecases_builder,
             movie_usecases_builder=moview_usecases_builder,
+            review_usecases_builder=review_usecases_builder,
             app_title=settings.APP_TITLE,
             api_v1_prefix=settings.API_V1_PREFIX,
             openapi_url=settings.OPENAPI_URL,

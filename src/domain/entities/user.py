@@ -35,3 +35,7 @@ class SafeCredentials(Username):
 
 class UserPublic(UserId, Username):
     pass
+
+
+class UserPrivate(UserId, SafeCredentials):
+    pass

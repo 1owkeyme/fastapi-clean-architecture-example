@@ -9,6 +9,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_user_private_by_username(self, username_entity: entities.user.Username) -> entities.user.UserPrivate:
+        pass
+
+    @abstractmethod
     async def get_all_users(self) -> list[entities.user.UserPublic]:
         pass
 

@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get("/{id}")
 async def get_review_by_id(
-    get_all_users_usecase: dependencies.GetAllUsersUsecaseDependency,
+    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
     id_: t.Annotated[int, Path(alias="id", gt=0)],
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
@@ -25,7 +25,7 @@ async def get_review_by_id(
 
 @router.post("/")
 async def create_review(
-    create_review_usecase: dependencies.CreateReviewUsecaseDependency,
+    create_review_usecase: dependencies.usecases.CreateReviewUsecaseDependency,
     create_review_schema: schemas.reviews.CreateReviewSchema,
 ) -> views.responses.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
@@ -40,7 +40,7 @@ async def create_review(
 
 @router.delete("/")
 async def delete_review(
-    create_user_usecase: dependencies.CreateUserUsecaseDependency,
+    create_user_usecase: dependencies.usecases.CreateUserUsecaseDependency,
     create_user_schema: schemas.users.CreateUserSchema,
 ) -> views.responses.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()

@@ -1,10 +1,8 @@
 import typing as t
 
-from fastapi import Depends, Path
+from fastapi import Depends
 
 from domain import usecases
-
-from . import schemas
 
 
 user_usecases_builder: usecases.user.UserUsecasesBuilder | None = None
@@ -67,6 +65,15 @@ def __get_get_user_by_id_usecase() -> usecases.user.GetUserByIdUsecase:
 GetUserByIdUsecaseDependency = t.Annotated[usecases.user.GetUserByIdUsecase, Depends(__get_get_user_by_id_usecase)]
 
 
+def __get_authenticate_user_usecase() -> usecases.user.AuthenticateUserUsecase:
+    return __get_user_usecases_builder().construct_authenticate_user_usecase()
+
+
+AuthenticateUserUsecaseDependency = t.Annotated[
+    usecases.user.AuthenticateUserUsecase, Depends(__get_authenticate_user_usecase)
+]
+
+
 def __get_create_movie_usecase() -> usecases.movie.CreateMovieUsecase:
     return __get_movie_usecases_builder().construct_create_movie_usecase()
 
@@ -116,10 +123,3 @@ def __get_delete_review_usecase() -> usecases.review.DeleteReviewUsecase:
 
 
 DeleteReviewUsecaseDependency = t.Annotated[usecases.review.DeleteReviewUsecase, Depends(__get_delete_review_usecase)]
-
-
-def __get_user_id_from_path(id_: t.Annotated[int, Path(alias="id", gt=0)]) -> schemas.users.UserId:
-    return schemas.users.UserId(id=id_)
-
-
-GetUserIdFromPathDependency = t.Annotated[schemas.users.UserId, Depends(__get_user_id_from_path)]

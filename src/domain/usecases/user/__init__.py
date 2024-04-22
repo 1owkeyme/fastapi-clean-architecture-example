@@ -1,4 +1,5 @@
 from . import interfaces as interfaces
+from .authenticate import AuthenticateUserUsecase as AuthenticateUserUsecase
 from .builder import UserUsecasesBuilder as UserUsecasesBuilder
 from .create import CreateUserUsecase as CreateUserUsecase
 from .delete import DeleteUserUsecase as DeleteUserUsecase

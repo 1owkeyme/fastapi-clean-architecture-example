@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/")
 async def get_all_movies(
-    get_all_users_usecase: dependencies.GetAllUsersUsecaseDependency,
+    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
 
@@ -23,7 +23,7 @@ async def get_all_movies(
 
 @router.get("/{id}")
 async def get_movie_by_id(
-    get_all_users_usecase: dependencies.GetAllUsersUsecaseDependency,
+    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
     id_: t.Annotated[int, Path(alias="id", gt=0)],
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
@@ -35,7 +35,7 @@ async def get_movie_by_id(
 
 @router.post("/")
 async def create_movie(
-    create_movie_usecase: dependencies.CreateMovieUsecaseDependency,
+    create_movie_usecase: dependencies.usecases.CreateMovieUsecaseDependency,
     create_movie_schema: schemas.movies.CreateMovieSchema,
 ) -> responses.EmptyResponse:
     movie_info_entity = create_movie_schema.to_movie_info_entity()
@@ -47,7 +47,7 @@ async def create_movie(
 
 @router.delete("/")
 async def delete_movie(
-    delete_movie_usecase: dependencies.DeleteMovieUsecaseDependency,
+    delete_movie_usecase: dependencies.usecases.DeleteMovieUsecaseDependency,
     delete_movie_schema: schemas.movies.DeleteMovieSchema,
 ) -> responses.EmptyResponse:
     movie_id_enitity = delete_movie_schema.to_movie_id_entity()
@@ -59,7 +59,7 @@ async def delete_movie(
 
 @router.get("/{id}/reviews")
 async def get_all_movie_reviews(
-    get_all_user_reviews_usecase: dependencies.GetAllUserReviewsUsecaseDependency,
+    get_all_user_reviews_usecase: dependencies.usecases.GetAllUserReviewsUsecaseDependency,
     id_: t.Annotated[int, Path(alias="id", gt=0)],
 ) -> views.responses.CreateUserResponse:
     return views.responses.CreateUserResponse.new(user_id=user_id)

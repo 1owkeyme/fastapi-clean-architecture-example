@@ -1,6 +1,7 @@
 from domain.interfaces import security as security_interfaces
 
 from . import interfaces
+from .authenticate import AuthenticateUserUsecase
 from .create import CreateUserUsecase
 from .delete import DeleteUserUsecase
 from .get_all import GetAllUsersUsecase
@@ -34,3 +35,6 @@ class UserUsecasesBuilder:
 
     def construct_get_user_by_id_usecase(self) -> GetUserByIdUsecase:
         return GetUserByIdUsecase(user_repository=self._user_repository)
+
+    def construct_authenticate_user_usecase(self) -> AuthenticateUserUsecase:
+        return AuthenticateUserUsecase(user_repository=self._user_repository, hash_service=self._hash_service)

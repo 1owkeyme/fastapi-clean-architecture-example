@@ -42,6 +42,15 @@ class SQLAlchemy(
                 return user.to_user_public_entity()
             raise usecases.user.interfaces.repository_errors.UserNotFoundError
 
+    async def get_user_private_by_username(self, username_entity: entities.user.Username) -> entities.user.UserPrivate:
+        username_model = models.user.Username.from_entity(username_entity)
+
+        stmt = select(models.User).where(models.User.username == username_model.username)
+        async with self._get_scoped_session() as session:
+            if (user := await session.scalar(stmt)) is not None:
+                return user.to_user_private_entity()
+            raise usecases.user.interfaces.repository_errors.UserNotFoundError
+
     async def get_all_users(self) -> list[entities.user.UserPublic]:
         stmt = select(models.User).order_by(models.User.id)
         async with self._get_scoped_session() as session:

@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/")
 async def get_all_users(
-    get_all_users_usecase: dependencies.GetAllUsersUsecaseDependency,
+    get_all_users_usecase: dependencies.usecases.GetAllUsersUsecaseDependency,
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
 
@@ -19,8 +19,8 @@ async def get_all_users(
 
 @router.get("/{id}")
 async def get_user_by_id(
-    get_user_by_id_usecase: dependencies.GetUserByIdUsecaseDependency,
-    user_id: dependencies.GetUserIdFromPathDependency,
+    get_user_by_id_usecase: dependencies.usecases.GetUserByIdUsecaseDependency,
+    user_id: dependencies.path.GetUserIdFromPathDependency,
 ) -> views.responses.GetUserByIdResponse:
     user_id_entity = user_id.to_entity()
 
@@ -33,7 +33,7 @@ async def get_user_by_id(
 
 @router.post("/")
 async def create_user(
-    create_user_usecase: dependencies.CreateUserUsecaseDependency,
+    create_user_usecase: dependencies.usecases.CreateUserUsecaseDependency,
     create_user_schema: schemas.users.CreateUserSchema,
 ) -> views.responses.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
@@ -48,7 +48,7 @@ async def create_user(
 
 @router.delete("/")
 async def delete_user(
-    create_user_usecase: dependencies.CreateUserUsecaseDependency,
+    create_user_usecase: dependencies.usecases.CreateUserUsecaseDependency,
     create_user_schema: schemas.users.CreateUserSchema,
 ) -> views.responses.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
@@ -63,8 +63,8 @@ async def delete_user(
 
 @router.get("/{id}/reviews")
 async def get_all_user_reviews(
-    get_all_user_reviews_usecase: dependencies.GetAllUserReviewsUsecaseDependency,
-    user_id: dependencies.GetUserIdFromPathDependency,
+    get_all_user_reviews_usecase: dependencies.usecases.GetAllUserReviewsUsecaseDependency,
+    user_id: dependencies.path.GetUserIdFromPathDependency,
 ) -> views.responses.GetAllUserReviewsResponse:
     user_id_entity = user_id.to_entity()
 

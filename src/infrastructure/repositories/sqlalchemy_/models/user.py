@@ -26,6 +26,13 @@ class User(Base):
     def to_user_public_entity(self) -> entities.user.UserPublic:
         return entities.user.UserPublic(id=self.id, username=self.username)
 
+    def to_user_private_entity(self) -> entities.user.UserPrivate:
+        return entities.user.UserPrivate(
+            id=self.id,
+            username=self.username,
+            hashed_password_hex=self.hashed_password_hex,
+        )
+
     def to_user_id_entity(self) -> entities.user.UserId:
         return entities.user.UserId(id=self.id)
 
@@ -57,3 +64,11 @@ class UserId(StrictBaseModel):
     @classmethod
     def from_user_id_entity(cls, user_id_entity: entities.user.UserId) -> t.Self:
         return cls(id=user_id_entity.id)
+
+
+class Username(StrictBaseModel):
+    username: str
+
+    @classmethod
+    def from_entity(cls, entity: entities.user.Username) -> t.Self:
+        return cls(username=entity.username)
