@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+from sqlalchemy.orm import selectinload
 
 from domain import entities, usecases
 
@@ -30,12 +31,16 @@ class SQLAlchemy(
         )
 
     @asynccontextmanager
-    async def _get_scoped_session(
-        self,
-    ) -> t.AsyncIterator[async_scoped_session[AsyncSession]]:
+    async def _get_scoped_session(self) -> t.AsyncIterator[async_scoped_session[AsyncSession]]:
         scoped_session = async_scoped_session(self._session_factory, scopefunc=current_task)
         yield scoped_session
         await scoped_session.close()
+
+    async def get_user_by_id(self, id_entity: entities.user.UserId) -> entities.user.UserPublic:
+        async with self._get_scoped_session() as session:
+            if (user := await session.get(models.User, id_entity.id)) is not None:
+                return user.to_user_public_entity()
+            raise usecases.user.interfaces.repository_errors.UserNotFoundError
 
     async def get_all_users(self) -> list[entities.user.UserPublic]:
         stmt = select(models.User).order_by(models.User.id)
@@ -44,10 +49,7 @@ class SQLAlchemy(
 
         return [user.to_user_public_entity() for user in users]
 
-    async def create_user(
-        self,
-        safe_credentials_entity: entities.user.SafeCredentials,
-    ) -> None:
+    async def create_user(self, safe_credentials_entity: entities.user.SafeCredentials) -> entities.user.UserId:
         user = models.User(
             username=safe_credentials_entity.username,
             hashed_password_hex=safe_credentials_entity.hashed_password_hex,
@@ -59,17 +61,28 @@ class SQLAlchemy(
             except IntegrityError:
                 raise usecases.user.interfaces.repository_errors.UserAlreadyExistsError from None
 
-    async def delete_user(
-        self,
-        id_entity: entities.user.UserId,
-    ) -> None:
+        return user.to_user_id_entity()
+
+    async def delete_user(self, id_entity: entities.user.UserId) -> None:
         async with self._get_scoped_session() as session:
-            user = await session.get(models.User, id_entity.id)
-            if user:
+            if (user := await session.get(models.User, id_entity.id)) is not None:
                 await session.delete(user)
             else:
                 raise usecases.user.interfaces.repository_errors.UserNotFoundError
             await session.commit()
+
+    async def get_all_user_reviews(self, id_entity: entities.user.UserId) -> list[entities.review.Review]:
+        stmt = select(models.User).options(selectinload(models.User.reviews)).where(models.User.id == id_entity.id)
+        async with self._get_scoped_session() as session:
+            if (user := await session.scalar(stmt)) is not None:
+                return [review.to_review_entity() for review in user.reviews]
+            raise usecases.user.interfaces.repository_errors.UserNotFoundError
+
+    async def get_movie_by_id(self, id_entity: entities.movie.MovieId) -> entities.movie.Movie:
+        async with self._get_scoped_session() as session:
+            if (movie := await session.get(models.Movie, id_entity.id)) is not None:
+                return movie.to_movie_entity()
+            raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
 
     async def get_all_movies(self) -> list[entities.movie.Movie]:
         stmt = select(models.Movie).order_by(models.Movie.id)
@@ -89,17 +102,20 @@ class SQLAlchemy(
 
     async def delete_movie(self, id_entity: entities.movie.MovieId) -> None:
         async with self._get_scoped_session() as session:
-            movie = await session.get(models.Movie, id_entity.id)
-            if movie:
+            if (movie := await session.get(models.Movie, id_entity.id)) is not None:
                 await session.delete(movie)
             else:
                 raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
             await session.commit()
 
-    async def create_review(
-        self,
-        info_entity: entities.review.ReviewInfo,
-    ) -> None:
+    async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.Review]:
+        stmt = select(models.Movie).options(selectinload(models.Movie.reviews)).where(models.Movie.id == id_entity.id)
+        async with self._get_scoped_session() as session:
+            if (movie := await session.scalar(stmt)) is not None:
+                return [review.to_review_entity() for review in movie.reviews]
+            raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
+
+    async def create_review(self, info_entity: entities.review.ReviewInfo) -> None:
         review = models.Review.from_review_info_enitity(info_entity)
         async with self._get_scoped_session() as session:
             session.add(review)
@@ -110,8 +126,7 @@ class SQLAlchemy(
 
     async def delete_review(self, id_entity: entities.review.ReviewId) -> None:
         async with self._get_scoped_session() as session:
-            review = await session.get(models.Review, id_entity.id)
-            if review:
+            if (review := await session.get(models.Review, id_entity.id)) is not None:
                 await session.delete(review)
             else:
                 raise usecases.review.interfaces.repository_errors.ReviewNotFoundError

@@ -33,13 +33,19 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
     text: Mapped[str | None] = mapped_column(Text())
 
     @classmethod
-    def from_review_info_enitity(
-        cls,
-        review_entity: entities.review.ReviewInfo,
-    ) -> t.Self:
+    def from_review_info_enitity(cls, review_entity: entities.review.ReviewInfo) -> t.Self:
         return cls(
             stars_x10=int(review_entity.stars * 10),
             text=review_entity.text,
             user_id=review_entity.user_id,
             movie_id=review_entity.movie_id,
+        )
+
+    def to_review_entity(self) -> entities.review.Review:
+        return entities.review.Review(
+            id=self.id,
+            user_id=self.user_id,
+            movie_id=self.movie_id,
+            stars=self.stars_10x / 10,
+            text=self.text,
         )

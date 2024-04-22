@@ -1,11 +1,6 @@
 from pydantic import Field
 
-from common import StrictBaseModel
-
-
-_STARS_MIN = 0.0
-_STARS_MAX = 5.0
-_STAR_STEP = 0.5
+from common import StrictBaseModel, stars
 
 
 class ReviewId(StrictBaseModel):
@@ -16,8 +11,12 @@ class ReviewInfo(StrictBaseModel):
     user_id: int
     movie_id: int
     stars: float = Field(
-        ge=_STARS_MIN,
-        multiple_of=_STAR_STEP,
-        le=_STARS_MAX,
+        ge=stars.STARS_MIN,
+        multiple_of=stars.STAR_STEP,
+        le=stars.STARS_MAX,
     )
     text: str | None = None
+
+
+class ReviewFor(ReviewId, ReviewInfo):
+    pass

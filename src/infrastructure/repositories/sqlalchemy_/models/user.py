@@ -27,6 +27,9 @@ class User(Base):
     def to_user_public_entity(self) -> entities.user.UserPublic:
         return entities.user.UserPublic(id=self.id, username=self.username)
 
+    def to_user_id_entity(self) -> entities.user.UserId:
+        return entities.user.UserId(id=self.id)
+
 
 class UserRelationMixin:
     _user_id_unique: bool = False

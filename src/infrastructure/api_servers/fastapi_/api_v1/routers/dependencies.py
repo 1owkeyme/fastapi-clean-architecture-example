@@ -28,55 +28,89 @@ def __get_review_usecases_builder() -> usecases.review.ReviewUsecasesBuilder:
     return review_usecases_builder
 
 
-def __get_sign_in_usecase() -> usecases.user.SignInUsecase:
-    return __get_user_usecases_builder().construct_sign_in_usecase()
+def __get_create_user_usecase() -> usecases.user.CreateUserUsecase:
+    return __get_user_usecases_builder().construct_create_user_usecase()
 
 
-SignInUsecaseDependency = t.Annotated[
-    usecases.user.SignInUsecase, Depends(__get_sign_in_usecase)
+CreateUserUsecaseDependency = t.Annotated[usecases.user.CreateUserUsecase, Depends(__get_create_user_usecase)]
+
+
+def __get_delete_user_usecase() -> usecases.user.DeleteUserUsecase:
+    return __get_user_usecases_builder().construct_delete_user_usecase()
+
+
+DeleteUserUsecaseDependency = t.Annotated[usecases.user.DeleteUserUsecase, Depends(__get_delete_user_usecase)]
+
+
+def __get_get_all_users_usecase() -> usecases.user.GetAllUsersUsecase:
+    return __get_user_usecases_builder().construct_get_all_users_usecase()
+
+
+GetAllUsersUsecaseDependency = t.Annotated[usecases.user.GetAllUsersUsecase, Depends(__get_get_all_users_usecase)]
+
+
+def __get_get_all_user_reviews_usecase() -> usecases.user.GetAllUserReviewsUsecase:
+    return __get_user_usecases_builder().construct_get_all_user_reviews_usecase()
+
+
+GetAllUserReviewsUsecaseDependency = t.Annotated[
+    usecases.user.GetAllUserReviewsUsecase, Depends(__get_get_all_user_reviews_usecase)
 ]
 
 
-def __get_sign_up_usecase() -> usecases.user.CreateUserUsecase:
-    return __get_user_usecases_builder().construct_sign_up_usecase()
+def __get_get_user_by_id_usecase() -> usecases.user.GetUserByIdUsecase:
+    return __get_user_usecases_builder().construct_get_user_by_id_usecase()
 
 
-CreateUserUsecaseDependency = t.Annotated[
-    usecases.user.CreateUserUsecase, Depends(__get_sign_up_usecase)
-]
+GetUserByIdUsecaseDependency = t.Annotated[usecases.user.GetUserByIdUsecase, Depends(__get_get_user_by_id_usecase)]
 
 
 def __get_create_movie_usecase() -> usecases.movie.CreateMovieUsecase:
     return __get_movie_usecases_builder().construct_create_movie_usecase()
 
 
-CreateMovieUsecaseDependency = t.Annotated[
-    usecases.movie.CreateMovieUsecase, Depends(__get_create_movie_usecase)
-]
+CreateMovieUsecaseDependency = t.Annotated[usecases.movie.CreateMovieUsecase, Depends(__get_create_movie_usecase)]
 
 
 def __get_delete_movie_usecase() -> usecases.movie.DeleteMovieUsecase:
     return __get_movie_usecases_builder().construct_delete_movie_usecase()
 
 
-DeleteMovieUsecaseDependency = t.Annotated[
-    usecases.movie.DeleteMovieUsecase, Depends(__get_delete_movie_usecase)
+DeleteMovieUsecaseDependency = t.Annotated[usecases.movie.DeleteMovieUsecase, Depends(__get_delete_movie_usecase)]
+
+
+def __get_get_all_movie_reviews_usecase() -> usecases.movie.GetAllMovieReviewsUsecase:
+    return __get_movie_usecases_builder().construct_get_all_movie_reviews_usecase()
+
+
+GetAllMovieReviewsUsecaseDependency = t.Annotated[
+    usecases.movie.GetAllMovieReviewsUsecase, Depends(__get_get_all_movie_reviews_usecase)
 ]
+
+
+def __get_get_all_movies_usecase() -> usecases.movie.GetAllMoviesUsecase:
+    return __get_movie_usecases_builder().construct_get_all_movies_usecase()
+
+
+GetAllMoviesUsecaseDependency = t.Annotated[usecases.movie.GetAllMoviesUsecase, Depends(__get_get_all_movies_usecase)]
+
+
+def __get_get_movie_by_id_usecase() -> usecases.movie.GetMovieByIdUsecase:
+    return __get_movie_usecases_builder().construct_get_movie_by_id_usecase()
+
+
+GetMovieByIdUsecaseDependency = t.Annotated[usecases.movie.GetMovieByIdUsecase, Depends(__get_get_movie_by_id_usecase)]
 
 
 def __get_create_review_usecase() -> usecases.review.CreateReviewUsecase:
     return __get_review_usecases_builder().construct_create_review_usecase()
 
 
-CreateReviewUsecaseDependency = t.Annotated[
-    usecases.review.CreateReviewUsecase, Depends(__get_create_review_usecase)
-]
+CreateReviewUsecaseDependency = t.Annotated[usecases.review.CreateReviewUsecase, Depends(__get_create_review_usecase)]
 
 
 def __get_delete_review_usecase() -> usecases.review.DeleteReviewUsecase:
     return __get_review_usecases_builder().construct_delete_review_usecase()
 
 
-DeleteReviewUsecaseDependency = t.Annotated[
-    usecases.review.DeleteReviewUsecase, Depends(__get_delete_review_usecase)
-]
+DeleteReviewUsecaseDependency = t.Annotated[usecases.review.DeleteReviewUsecase, Depends(__get_delete_review_usecase)]
