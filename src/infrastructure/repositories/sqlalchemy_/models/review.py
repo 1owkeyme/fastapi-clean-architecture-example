@@ -4,6 +4,7 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Integer, Text
 
+from common import StrictBaseModel
 from domain import entities
 
 from .base import Base
@@ -32,20 +33,25 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
     stars_10x: Mapped[int] = mapped_column(Integer())
     text: Mapped[str | None] = mapped_column(Text())
 
-    @classmethod
-    def from_review_info_enitity(cls, review_entity: entities.review.ReviewInfo) -> t.Self:
-        return cls(
-            stars_x10=int(review_entity.stars * 10),
-            text=review_entity.text,
-            user_id=review_entity.user_id,
-            movie_id=review_entity.movie_id,
-        )
+    def to_review_id_entity(self) -> entities.review.ReviewId:
+        return entities.review.ReviewId(id=self.id)
 
-    def to_review_entity(self) -> entities.review.Review:
-        return entities.review.Review(
+    def to_review_for_user_entity(self) -> entities.review.ReviewForUser:
+        return entities.review.ReviewForUser(
             id=self.id,
-            user_id=self.user_id,
-            movie_id=self.movie_id,
             stars=self.stars_10x / 10,
             text=self.text,
+            movie=self.movie.to_movie_entity(),
+        )
+
+
+class ReviewContents(StrictBaseModel):
+    stars_10x: int
+    text: str | None = None
+
+    @classmethod
+    def from_review_contents_entity(cls, review_contents_entity: entities.review.ReviewContents) -> t.Self:
+        return cls(
+            stars_10x=int(review_contents_entity.stars * 10),
+            text=review_contents_entity.text,
         )

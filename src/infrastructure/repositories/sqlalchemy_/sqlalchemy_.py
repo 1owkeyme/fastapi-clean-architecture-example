@@ -71,11 +71,11 @@ class SQLAlchemy(
                 raise usecases.user.interfaces.repository_errors.UserNotFoundError
             await session.commit()
 
-    async def get_all_user_reviews(self, id_entity: entities.user.UserId) -> list[entities.review.Review]:
+    async def get_all_user_reviews(self, id_entity: entities.user.UserId) -> list[entities.review.ReviewForUser]:
         stmt = select(models.User).options(selectinload(models.User.reviews)).where(models.User.id == id_entity.id)
         async with self._get_scoped_session() as session:
             if (user := await session.scalar(stmt)) is not None:
-                return [review.to_review_entity() for review in user.reviews]
+                return [review.to_review_for_user_entity() for review in user.reviews]
             raise usecases.user.interfaces.repository_errors.UserNotFoundError
 
     async def get_movie_by_id(self, id_entity: entities.movie.MovieId) -> entities.movie.Movie:
@@ -108,21 +108,42 @@ class SQLAlchemy(
                 raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
             await session.commit()
 
-    async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.Review]:
+    async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.ReviewForMovie]:
         stmt = select(models.Movie).options(selectinload(models.Movie.reviews)).where(models.Movie.id == id_entity.id)
         async with self._get_scoped_session() as session:
             if (movie := await session.scalar(stmt)) is not None:
                 return [review.to_review_entity() for review in movie.reviews]
             raise usecases.movie.interfaces.repository_errors.MovieNotFoundError
 
-    async def create_review(self, info_entity: entities.review.ReviewInfo) -> None:
-        review = models.Review.from_review_info_enitity(info_entity)
+    async def get_review_by_id(self, id_entity: entities.review.ReviewId) -> None:
+        pass  # TODO:
+
+    async def create_review(
+        self,
+        user_id_entity: entities.user.UserId,
+        movie_id_entity: entities.movie.MovieId,
+        contents_entity: entities.review.ReviewContents,
+    ) -> entities.review.ReviewId:
+        review_contents = models.review.ReviewContents.from_review_contents_entity(
+            review_contents_entity=contents_entity
+        )
+        user_id = models.user.UserId.from_user_id_entity(user_id_entity=user_id_entity)
+        movie_id = models.movie.MovieId.from_movie_id_entity(movie_id_entity=movie_id_entity)
+
+        review = models.Review(
+            user_id=user_id.id,
+            movie_id=movie_id.id,
+            stars_10x=review_contents.stars_10x,
+            text=review_contents.text,
+        )
         async with self._get_scoped_session() as session:
             session.add(review)
             try:
                 await session.commit()
             except IntegrityError:
                 raise usecases.review.interfaces.repository_errors.ReviewAlreadyExistsError from None
+
+        return review.to_review_id_entity()
 
     async def delete_review(self, id_entity: entities.review.ReviewId) -> None:
         async with self._get_scoped_session() as session:

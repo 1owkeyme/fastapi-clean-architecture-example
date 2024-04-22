@@ -1,6 +1,4 @@
-import typing as t
-
-from fastapi import APIRouter, Path
+from fastapi import APIRouter
 
 from . import dependencies, schemas, views
 
@@ -9,23 +7,34 @@ router = APIRouter()
 
 
 @router.get("/")
-async def get_all(
+async def get_all_users(
     get_all_users_usecase: dependencies.GetAllUsersUsecaseDependency,
 ) -> views.responses.GetAllUsersResponse:
     user_public_entities = await get_all_users_usecase.execute()
 
-    users = [
-        views.users.UserPublic.from_user_public_entity(user_public_entity)
-        for user_public_entity in user_public_entities
-    ]
+    users = [views.users.UserPublic.from_entity(user_public_entity) for user_public_entity in user_public_entities]
 
     return views.responses.GetAllUsersResponse.new(users=users)
+
+
+@router.get("/{id}")
+async def get_user_by_id(
+    get_user_by_id_usecase: dependencies.GetUserByIdUsecaseDependency,
+    user_id: dependencies.GetUserIdFromPathDependency,
+) -> views.responses.GetUserByIdResponse:
+    user_id_entity = user_id.to_entity()
+
+    user_enitity = await get_user_by_id_usecase.execute(user_id_entity)
+
+    user = views.users.UserPublic.from_entity(user_enitity)
+
+    return views.responses.GetUserByIdResponse.new(user=user)
 
 
 @router.post("/")
 async def create_user(
     create_user_usecase: dependencies.CreateUserUsecaseDependency,
-    create_user_schema: schemas.auth.CreateUserSchema,
+    create_user_schema: schemas.users.CreateUserSchema,
 ) -> views.responses.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
 
@@ -37,16 +46,32 @@ async def create_user(
     return views.responses.CreateUserResponse.new(user_id=user_id)
 
 
-@router.get("/{id}/all-reviews")
-async def get_all_reviews(
-    get_all_user_reviews_usecase: dependencies.GetAllUserReviewsUsecaseDependency,
-    id_: t.Annotated[int, Path(alias="id", gt=0)],
+@router.delete("/")
+async def delete_user(
+    create_user_usecase: dependencies.CreateUserUsecaseDependency,
+    create_user_schema: schemas.users.CreateUserSchema,
 ) -> views.responses.CreateUserResponse:
-    user_id_entity = views.users.UserId(id=id_).to_entity()
+    user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
 
-    review_enities = await get_all_user_reviews_usecase.execute(user_id_entity)
-
-    
+    user_id_entity = await create_user_usecase.execute(
+        user_plain_credentials=user_plain_credentials_entity,
+    )
 
     user_id = views.users.UserId.from_user_id_entity(user_id_entity)
     return views.responses.CreateUserResponse.new(user_id=user_id)
+
+
+@router.get("/{id}/reviews")
+async def get_all_user_reviews(
+    get_all_user_reviews_usecase: dependencies.GetAllUserReviewsUsecaseDependency,
+    user_id: dependencies.GetUserIdFromPathDependency,
+) -> views.responses.GetAllUserReviewsResponse:
+    user_id_entity = user_id.to_entity()
+
+    review_for_user_entities = await get_all_user_reviews_usecase.execute(user_id_entity)
+
+    reviews_for_user = [
+        views.reviews.ReviewForUser.from_entity(review_for_user_entity)
+        for review_for_user_entity in review_for_user_entities
+    ]
+    return views.responses.GetAllUserReviewsResponse.new(reviews_for_user=reviews_for_user)

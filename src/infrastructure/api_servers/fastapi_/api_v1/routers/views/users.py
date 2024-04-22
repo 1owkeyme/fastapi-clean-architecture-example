@@ -19,5 +19,5 @@ class UserPublic(UserId):
     username: str
 
     @classmethod
-    def from_user_public_entity(cls, user_public_entity: entities.user.UserPublic) -> t.Self:
-        return cls(id=user_public_entity.id, username=user_public_entity.username)
+    def from_entity(cls, entity: entities.user.UserPublic) -> t.Self:
+        return cls(id=entity.id, username=entity.username)

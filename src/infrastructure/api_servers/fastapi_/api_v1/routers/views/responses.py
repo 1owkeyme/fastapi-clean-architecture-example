@@ -11,16 +11,28 @@ class GetAllUsersResult(StrictBaseModel):
     users: list[UserPublic]
 
 
-class CreateUserResult(UserId):
-    pass
-
-
 class GetAllUsersResponse(responses.base.SuccessResponse):
     result: GetAllUsersResult
 
     @classmethod
     def new(cls, users: list[UserPublic]) -> t.Self:
         return cls(result=GetAllUsersResult(users=users))
+
+
+class GetUserByIdResult(StrictBaseModel):
+    user: UserPublic
+
+
+class GetUserByIdResponse(responses.base.SuccessResponse):
+    result: GetUserByIdResult
+
+    @classmethod
+    def new(cls, user: UserPublic) -> t.Self:
+        return cls(result=GetUserByIdResult(user=user))
+
+
+class CreateUserResult(UserId):
+    pass
 
 
 class CreateUserResponse(responses.base.SuccessResponse):

@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 import typing as t
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.types import String
 
+from common import StrictBaseModel
 from domain import entities
 
 from .base import Base
@@ -22,7 +21,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(32), unique=True)
     hashed_password_hex: Mapped[str] = mapped_column(String(120))
 
-    reviews: Mapped[list[Review]] = relationship(back_populates="user")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
 
     def to_user_public_entity(self) -> entities.user.UserPublic:
         return entities.user.UserPublic(id=self.id, username=self.username)
@@ -50,3 +49,11 @@ class UserRelationMixin:
     @classmethod
     def user(cls) -> Mapped[User]:
         return relationship(back_populates=cls._user_back_populates)
+
+
+class UserId(StrictBaseModel):
+    id: int
+
+    @classmethod
+    def from_user_id_entity(cls, user_id_entity: entities.user.UserId) -> t.Self:
+        return cls(id=user_id_entity.id)

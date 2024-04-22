@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing as t
 from datetime import timedelta
 
@@ -7,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.types import Interval, String
 
+from common import StrictBaseModel
 from domain import entities
 
 from .base import Base
@@ -23,7 +22,7 @@ class Movie(Base):
     title: Mapped[str] = mapped_column(String(50), unique=True)
     duration: Mapped[timedelta] = mapped_column(Interval())
 
-    reviews: Mapped[list[Review]] = relationship(back_populates="movie")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="movie")
 
     @classmethod
     def from_movie_info_entity(cls, movie_info: entities.movie.MovieInfo) -> t.Self:
@@ -52,3 +51,11 @@ class MovieRelationMixin:
     @classmethod
     def movie(cls) -> Mapped[Movie]:
         return relationship(back_populates=cls._movie_back_populates)
+
+
+class MovieId(StrictBaseModel):
+    id: int
+
+    @classmethod
+    def from_movie_id_entity(cls, movie_id_entity: entities.movie.MovieId) -> t.Self:
+        return cls(id=movie_id_entity.id)

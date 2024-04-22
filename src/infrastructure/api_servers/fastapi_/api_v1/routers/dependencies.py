@@ -1,8 +1,10 @@
 import typing as t
 
-from fastapi import Depends
+from fastapi import Depends, Path
 
 from domain import usecases
+
+from . import schemas
 
 
 user_usecases_builder: usecases.user.UserUsecasesBuilder | None = None
@@ -114,3 +116,10 @@ def __get_delete_review_usecase() -> usecases.review.DeleteReviewUsecase:
 
 
 DeleteReviewUsecaseDependency = t.Annotated[usecases.review.DeleteReviewUsecase, Depends(__get_delete_review_usecase)]
+
+
+def __get_user_id_from_path(id_: t.Annotated[int, Path(alias="id", gt=0)]) -> schemas.users.UserId:
+    return schemas.users.UserId(id=id_)
+
+
+GetUserIdFromPathDependency = t.Annotated[schemas.users.UserId, Depends(__get_user_id_from_path)]

@@ -21,5 +21,5 @@ class MovieRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.Review]:
+    async def get_all_movie_reviews(self, id_entity: entities.movie.MovieId) -> list[entities.review.ReviewForMovie]:
         pass

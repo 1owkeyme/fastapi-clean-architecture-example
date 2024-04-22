@@ -2,14 +2,15 @@ from pydantic import Field
 
 from common import StrictBaseModel, stars
 
+from .movie import Movie
+from .user import UserPublic
+
 
 class ReviewId(StrictBaseModel):
     id: int
 
 
-class ReviewInfo(StrictBaseModel):
-    user_id: int
-    movie_id: int
+class ReviewContents(StrictBaseModel):
     stars: float = Field(
         ge=stars.STARS_MIN,
         multiple_of=stars.STAR_STEP,
@@ -18,5 +19,9 @@ class ReviewInfo(StrictBaseModel):
     text: str | None = None
 
 
-class ReviewFor(ReviewId, ReviewInfo):
-    pass
+class ReviewForUser(ReviewId, ReviewContents):
+    movie: Movie
+
+
+class ReviewForMovie(ReviewId, ReviewContents):
+    user: UserPublic

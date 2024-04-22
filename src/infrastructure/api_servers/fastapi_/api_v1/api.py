@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from domain import usecases
 
-from .routers import dependencies, movies, users
+from .routers import dependencies, movies, reviews, users
 
 
 def get_api_router(
@@ -16,5 +16,6 @@ def get_api_router(
 
     router.include_router(users.router, prefix="/users", tags=["users"])
     router.include_router(movies.router, prefix="/movies", tags=["movies"])
+    router.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
 
     return router

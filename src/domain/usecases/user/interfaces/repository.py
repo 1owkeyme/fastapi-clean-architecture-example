@@ -21,5 +21,5 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_all_user_reviews(self, id_entity: entities.user.UserId) -> list[entities.review.Review]:
+    async def get_all_user_reviews(self, id_entity: entities.user.UserId) -> list[entities.review.ReviewForUser]:
         pass
