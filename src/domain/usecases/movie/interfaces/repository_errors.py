@@ -1,4 +1,11 @@
-class MovieRepositoryError(Exception):
+from domain.usecases.interfaces import errors as base_err
+
+
+class MovieRepositoryCriticalError(base_err.UsecaseCriticalError):
+    pass
+
+
+class MovieRepositoryError(base_err.UsecaseError):
     pass
 
 

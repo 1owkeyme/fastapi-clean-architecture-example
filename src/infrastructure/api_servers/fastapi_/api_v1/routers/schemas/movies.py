@@ -5,8 +5,6 @@ from pydantic import ConfigDict, Field
 from common import StrictBaseModel
 from domain import entities
 
-from .id_ import IdSchema
-
 
 class CreateMovieSchema(StrictBaseModel):
     model_config = ConfigDict(ser_json_timedelta="float")
@@ -21,6 +19,8 @@ class CreateMovieSchema(StrictBaseModel):
         )
 
 
-class MovieIdSchema(IdSchema):
+class MovieIdSchema(StrictBaseModel):
+    id: int = Field(gt=0, examples=[122])
+
     def to_entity(self) -> entities.movie.MovieId:
         return entities.movie.MovieId(id=self.id)

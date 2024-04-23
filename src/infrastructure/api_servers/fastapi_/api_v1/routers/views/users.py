@@ -1,12 +1,13 @@
 import typing as t
 
-from common import StrictBaseModel
+from pydantic import Field
+
 from domain import entities
 
+from .id_ import Id
 
-class UserId(StrictBaseModel):
-    id: int
 
+class UserId(Id):
     @classmethod
     def from_user_id_entity(cls, user_id_entity: entities.user.UserId) -> t.Self:
         return cls(id=user_id_entity.id)
@@ -16,7 +17,7 @@ class UserId(StrictBaseModel):
 
 
 class UserPublic(UserId):
-    username: str
+    username: str = Field(examples=["Frank"])
 
     @classmethod
     def from_entity(cls, entity: entities.user.UserPublic) -> t.Self:

@@ -1,12 +1,14 @@
 import typing as t
 from datetime import timedelta
 
+from pydantic import Field
+
 from common import StrictBaseModel
 from domain import entities
 
 
 class MovieId(StrictBaseModel):
-    id: int
+    id: int = Field(gt=0, examples=[502])
 
     @classmethod
     def from_entity(cls, id_: entities.movie.MovieId) -> t.Self:
@@ -14,8 +16,8 @@ class MovieId(StrictBaseModel):
 
 
 class MovieInfo(StrictBaseModel):
-    title: str
-    duration: timedelta
+    title: str = Field(examples=["The Great Gatsby"])
+    duration: timedelta = Field(strict=False, examples=["P0DT2H33M0S"])
 
 
 class Movie(MovieId, MovieInfo):

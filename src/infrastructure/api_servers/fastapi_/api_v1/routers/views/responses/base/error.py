@@ -6,13 +6,15 @@ from common import StrictBaseModel
 
 
 class ErrorCode(IntEnum):
-    Unauthenticated = 401
-    Unauthorized = 403
+    UNAUTHENTICATED = HTTPStatus.UNAUTHORIZED
+    UNAUTHORIZED = HTTPStatus.FORBIDDEN
+    VALIDATION_ERROR = HTTPStatus.UNPROCESSABLE_ENTITY
+    UNHANDLED_SERVER_ERROR = HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class ErrorResult(StrictBaseModel):
+    code: ErrorCode
     message: str
-    code: int
 
 
 class ErrorResponse(StrictBaseModel):
@@ -24,7 +26,7 @@ class HTTPErrorResponse(StrictBaseModel):
 
 
 class ValidationErrorResult(ErrorResult):
-    code: int = HTTPStatus.UNPROCESSABLE_ENTITY
+    code: ErrorCode = ErrorCode.VALIDATION_ERROR
     message: str
 
 
@@ -32,6 +34,19 @@ class ValidationErrorResponse(ErrorResponse):
     error: ValidationErrorResult
 
     @classmethod
-    def create(cls, details: str) -> t.Self:
+    def new(cls, details: str) -> t.Self:
         message = f"Got invalid data in request.\nDetails: `{details}`"
         return cls(error=ValidationErrorResult(message=message))
+
+
+class UnhandledErrorResult(ErrorResult):
+    code: ErrorCode = ErrorCode.UNHANDLED_SERVER_ERROR
+    message: str = "Unhandled server error has occurred"
+
+
+class UnhandledErrorResponse(ErrorResponse):
+    error: UnhandledErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=UnhandledErrorResult())

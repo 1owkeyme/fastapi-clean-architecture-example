@@ -17,7 +17,7 @@ async def get_all_movies(
     return views.responses.movie.GetAllMoviesResponse.new(movies=movies)
 
 
-@router.get("/{id}", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
+@router.get("/{movie_id}", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
 async def get_movie_by_id(
     get_movie_by_id_usecase: dependencies.usecases.GetMovieByIdUsecaseDependency,
     movie_id: dependencies.path.MovieIdFromPathDependency,
@@ -41,8 +41,8 @@ async def create_movie(
     return views.responses.movie.CreateMovieResponse.new(movie_id)
 
 
-@router.delete("/{id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
-async def delete_movie(
+@router.delete("/{movie_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+async def delete_movie_by_id(
     delete_movie_usecase: dependencies.usecases.DeleteMovieUsecaseDependency,
     movie_id: dependencies.path.MovieIdFromPathDependency,
 ) -> views.responses.movie.DeleteMovieResponse:
@@ -53,8 +53,8 @@ async def delete_movie(
     return views.responses.movie.DeleteMovieResponse.new(deleted_movie_id)
 
 
-@router.get("/{id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
-async def get_all_movie_reviews(
+@router.get("/{movie_id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
+async def get_all_movie_reviews_by_id(
     get_all_movie_reviews_usecase: dependencies.usecases.GetAllMovieReviewsUsecaseDependency,
     movie_id: dependencies.path.MovieIdFromPathDependency,
 ) -> views.responses.movie.GetAllMovieReviewsResponse:

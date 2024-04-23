@@ -5,13 +5,12 @@ from pydantic import Field
 from common import StrictBaseModel, stars
 from domain import entities
 
+from .id_ import Id
 from .movie import Movie
 from .users import UserPublic
 
 
-class ReviewId(StrictBaseModel):
-    id: int
-
+class ReviewId(Id):
     @classmethod
     def from_review_id_entity(cls, review_id_entity: entities.review.ReviewId) -> t.Self:
         return cls(id=review_id_entity.id)
@@ -22,8 +21,9 @@ class ReviewContents(StrictBaseModel):
         ge=stars.STARS_MIN,
         multiple_of=stars.STAR_STEP,
         le=stars.STARS_MAX,
+        examples=["4.5"],
     )
-    text: str | None = None
+    text: str | None = Field(default=None, examples=["Heartwarming adventure: laughs, tears, pure joy!"])
 
 
 class ReviewMovieContents(StrictBaseModel):
