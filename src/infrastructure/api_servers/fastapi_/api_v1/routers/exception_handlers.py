@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse, Response
 
 from domain import usecases
 
-from . import views
+from . import responses
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ async def handle_http_exception(
     msg_warn = f"HTTP exception occurred.\nDetails: {details}."
     logger.warning(msg_warn)
 
-    body = views.responses.base.error.HTTPErrorResponse(message=details)
+    body = responses.base.error.HTTPErrorResponse(message=details)
 
     return JSONResponse(
         status_code=exc.status_code,
@@ -41,7 +41,7 @@ async def handle_request_validation_exception(
     msg_warn = f"Request didn't pass validation.\nDetails: {details}."
     logger.warning(msg_warn)
 
-    body = views.responses.base.error.ValidationErrorResponse.new(details)
+    body = responses.base.error.ValidationErrorResponse.new(details)
 
     return JSONResponse(
         status_code=HTTPStatus.OK,
@@ -56,7 +56,7 @@ async def handle_usecase_critical_exception(
     msg_crit = "Unhandled usecase critical error has occurred"
     logger.critical(msg_crit, exc_info=True)
 
-    body = views.responses.base.error.UnhandledErrorResponse.new()
+    body = responses.base.error.UnhandledErrorResponse.new()
 
     return JSONResponse(status_code=HTTPStatus.OK, content=body.model_dump())
 
@@ -68,7 +68,7 @@ async def handle_usecase_exception(
     msg_err = "Unhandled usecase error has occurred"
     logger.error(msg_err, exc_info=True)
 
-    body = views.responses.base.error.UnhandledErrorResponse.new()
+    body = responses.base.error.UnhandledErrorResponse.new()
 
     return JSONResponse(status_code=HTTPStatus.OK, content=body.model_dump())
 

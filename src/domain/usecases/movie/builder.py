@@ -1,23 +1,23 @@
-from . import interfaces
+from .. import interfaces
 from .create import CreateMovieUsecase
-from .delete import DeleteMovieUsecase
+from .delete_by_id import DeleteMovieByIdUsecase
 from .get_all import GetAllMoviesUsecase
-from .get_all_reviews import GetAllMovieReviewsUsecase
+from .get_all_reviews_by_id import GetAllMovieReviewsByIdUsecase
 from .get_by_id import GetMovieByIdUsecase
 
 
 class MovieUsecasesBuilder:
-    def __init__(self, movie_repository: interfaces.MovieRepository) -> None:
+    def __init__(self, movie_repository: interfaces.repositories.MovieRepository) -> None:
         self._movie_repository = movie_repository
 
     def construct_create_movie_usecase(self) -> CreateMovieUsecase:
         return CreateMovieUsecase(movie_repository=self._movie_repository)
 
-    def construct_delete_movie_usecase(self) -> DeleteMovieUsecase:
-        return DeleteMovieUsecase(movie_repository=self._movie_repository)
+    def construct_delete_movie_by_id_usecase(self) -> DeleteMovieByIdUsecase:
+        return DeleteMovieByIdUsecase(movie_repository=self._movie_repository)
 
-    def construct_get_all_movie_reviews_usecase(self) -> GetAllMovieReviewsUsecase:
-        return GetAllMovieReviewsUsecase(movie_repository=self._movie_repository)
+    def construct_get_all_movie_reviews_by_id_usecase(self) -> GetAllMovieReviewsByIdUsecase:
+        return GetAllMovieReviewsByIdUsecase(movie_repository=self._movie_repository)
 
     def construct_get_all_movies_usecase(self) -> GetAllMoviesUsecase:
         return GetAllMoviesUsecase(movie_repository=self._movie_repository)

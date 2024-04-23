@@ -1,7 +1,6 @@
-from . import interfaces as interfaces
 from .builder import MovieUsecasesBuilder as MovieUsecasesBuilder
 from .create import CreateMovieUsecase as CreateMovieUsecase
-from .delete import DeleteMovieUsecase as DeleteMovieUsecase
+from .delete_by_id import DeleteMovieByIdUsecase as DeleteMovieByIdUsecase
 from .get_all import GetAllMoviesUsecase as GetAllMoviesUsecase
-from .get_all_reviews import GetAllMovieReviewsUsecase as GetAllMovieReviewsUsecase
+from .get_all_reviews_by_id import GetAllMovieReviewsByIdUsecase as GetAllMovieReviewsByIdUsecase
 from .get_by_id import GetMovieByIdUsecase as GetMovieByIdUsecase

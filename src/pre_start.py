@@ -7,7 +7,7 @@ from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixe
 
 import services
 from domain import usecases
-from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
+from infrastructure.repositories import sqlalchemy_
 from settings import get_app_settings
 
 
@@ -43,19 +43,15 @@ def main() -> int:
     try:
         settings = get_app_settings()
         settings.configure_logging()
-        
-        bcrypt_password_service = services.security.password.BCryptPasswordService()
-        jwt_service = services.security.token.JWTService()
 
-        sql_alchemy = SQLAlchemy(str(settings.POSTGRES_DSN))
+        bcrypt_password_service = services.security.password.BCryptPasswordService()
+        user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
 
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
-            user_repository=sql_alchemy,
-            hash_service=bcrypt_password_service,
-            token_service=jwt_service,
-            secret=settings.SECRET_KEY,
-            access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+            user_repository=user_alchemy,
+            password_service=bcrypt_password_service,
         )
+
     except Exception:
         msg_crit = "Got unhandled error during service initialization"
         logger.critical(msg_crit, exc_info=True)

@@ -1,0 +1,39 @@
+import typing as t
+
+from fastapi import Depends
+
+from domain import usecases
+
+
+review_usecases_builder: usecases.review.ReviewUsecasesBuilder | None = None
+
+
+def __get_review_usecases_builder() -> usecases.review.ReviewUsecasesBuilder:
+    if review_usecases_builder is None:
+        raise RuntimeError  # TODO: raise HTTPException or smth
+    return review_usecases_builder
+
+
+def __get_get_review_by_id_usecase() -> usecases.review.GetReviewByIdUsecase:
+    return __get_review_usecases_builder().construct_get_review_by_id_usecase()
+
+
+GetReviewByIdUsecaseDependency = t.Annotated[
+    usecases.review.GetReviewByIdUsecase, Depends(__get_get_review_by_id_usecase)
+]
+
+
+def __get_create_review_usecase() -> usecases.review.CreateReviewUsecase:
+    return __get_review_usecases_builder().construct_create_review_usecase()
+
+
+CreateReviewUsecaseDependency = t.Annotated[usecases.review.CreateReviewUsecase, Depends(__get_create_review_usecase)]
+
+
+def __get_delete_review_by_id_usecase() -> usecases.review.DeleteReviewByIdUsecase:
+    return __get_review_usecases_builder().construct_delete_review_by_idusecase()
+
+
+DeleteReviewByIdUsecaseDependency = t.Annotated[
+    usecases.review.DeleteReviewByIdUsecase, Depends(__get_delete_review_by_id_usecase)
+]

@@ -5,7 +5,7 @@ from enum import IntEnum, unique
 
 import services
 from domain import entities, usecases
-from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
+from infrastructure.repositories import sqlalchemy_
 from settings import get_app_settings
 
 
@@ -24,17 +24,13 @@ def main() -> int:
         settings.configure_logging()
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
-        jwt_service = services.security.token.JWTService()
-
-        sql_alchemy = SQLAlchemy(str(settings.POSTGRES_DSN))
+        user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
 
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
-            user_repository=sql_alchemy,
-            hash_service=bcrypt_password_service,
-            token_service=jwt_service,
-            secret=settings.SECRET_KEY,
-            access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+            user_repository=user_alchemy,
+            password_service=bcrypt_password_service,
         )
+
         first_super_user_plain_credentials = entities.user.PlainCredentials(
             username=settings.FIRST_SUPER_USER_USERNAME,
             password=settings.FIRST_SUPER_USER_PASSWORD,

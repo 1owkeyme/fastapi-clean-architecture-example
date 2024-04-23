@@ -1,8 +1,6 @@
 from common import StrictBaseModel
 
-
-class UserId(StrictBaseModel):
-    id: int
+from .id_ import Id
 
 
 class Username(StrictBaseModel):
@@ -17,9 +15,9 @@ class SafeCredentials(Username):
     hashed_password_hex: str
 
 
-class UserPublic(UserId, Username):
+class UserPublic(Id, Username):
     pass
 
 
-class UserPrivate(UserId, SafeCredentials):
+class UserPrivate(Id, SafeCredentials):
     is_super_user: bool

@@ -2,9 +2,7 @@ from datetime import timedelta
 
 from common import StrictBaseModel
 
-
-class MovieId(StrictBaseModel):
-    id: int
+from .id_ import Id
 
 
 class MovieInfo(StrictBaseModel):
@@ -12,5 +10,5 @@ class MovieInfo(StrictBaseModel):
     duration: timedelta
 
 
-class Movie(MovieId, MovieInfo):
+class Movie(Id, MovieInfo):
     pass

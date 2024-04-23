@@ -4,16 +4,27 @@ from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Integer, Text
 
-from common import StrictBaseModel
 from domain import entities
 
 from .base import Base
 from .constants import TableName
+from .id_ import Id
 from .movie import MovieRelationMixin
 from .user import UserRelationMixin
 
 
-class Review(Base, UserRelationMixin, MovieRelationMixin):
+class ReviewInfo(Base):
+    __abstract__ = True
+
+    stars_10x: Mapped[int] = mapped_column(Integer())
+    text: Mapped[str | None] = mapped_column(Text())
+
+    @classmethod
+    def review_info_from_entity(cls, entity: entities.review.ReviewInfo) -> t.Self:
+        return cls(stars_10x=int(entity.stars * 10), text=entity.text)
+
+
+class Review(Id, ReviewInfo, UserRelationMixin, MovieRelationMixin):
     __tablename__ = TableName.REVIEWS
 
     __table_args__ = (
@@ -30,9 +41,6 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
     _movie_id_unique = False  # separate compound unique index created
     _movie_back_populates = TableName.REVIEWS
 
-    stars_10x: Mapped[int] = mapped_column(Integer())
-    text: Mapped[str | None] = mapped_column(Text())
-
     def to_entity(self) -> entities.review.Review:
         return entities.review.Review(
             id=self.id,
@@ -41,9 +49,6 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
             stars=self.stars_10x / 10,
             text=self.text,
         )
-
-    def to_review_id_entity(self) -> entities.review.ReviewId:
-        return entities.review.ReviewId(id=self.id)
 
     def to_review_for_user_entity(self) -> entities.review.ReviewForUser:
         return entities.review.ReviewForUser(
@@ -59,16 +64,4 @@ class Review(Base, UserRelationMixin, MovieRelationMixin):
             stars=self.stars_10x / 10,
             text=self.text,
             user=self.user.to_user_public_entity(),
-        )
-
-
-class ReviewContents(StrictBaseModel):
-    stars_10x: int
-    text: str | None = None
-
-    @classmethod
-    def from_review_contents_entity(cls, review_contents_entity: entities.review.ReviewContents) -> t.Self:
-        return cls(
-            stars_10x=int(review_contents_entity.stars * 10),
-            text=review_contents_entity.text,
         )

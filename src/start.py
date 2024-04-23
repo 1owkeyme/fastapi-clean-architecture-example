@@ -5,7 +5,7 @@ from enum import IntEnum, unique
 import services
 from domain import usecases
 from infrastructure.api_servers.fastapi_ import FastAPIServer
-from infrastructure.repositories.sqlalchemy_ import SQLAlchemy
+from infrastructure.repositories import sqlalchemy_
 from settings import get_app_settings
 
 
@@ -25,20 +25,26 @@ def main() -> int:
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         jwt_service = services.security.token.JWTService()
+        user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
+        movie_alchemy = sqlalchemy_.movie.AlchemyMovieRepository(str(settings.POSTGRES_DSN))
+        review_alchemy = sqlalchemy_.review.AlchemyReviewRepository(str(settings.POSTGRES_DSN))
 
-        sql_alchemy = SQLAlchemy(str(settings.POSTGRES_DSN))
-
-        user_usecases_builder = usecases.user.UserUsecasesBuilder(
-            user_repository=sql_alchemy,
-            hash_service=bcrypt_password_service,
+        auth_usecases_builder = usecases.auth.AuthUsecasesBuilder(
+            user_repository=user_alchemy,
+            password_service=bcrypt_password_service,
             token_service=jwt_service,
             secret=settings.SECRET_KEY,
             access_token_expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
         )
-        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=sql_alchemy)
-        review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=sql_alchemy)
+        user_usecases_builder = usecases.user.UserUsecasesBuilder(
+            user_repository=user_alchemy,
+            password_service=bcrypt_password_service,
+        )
+        moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=movie_alchemy)
+        review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=review_alchemy)
 
         api_server = FastAPIServer(
+            auth_usecases_builder=auth_usecases_builder,
             user_usecases_builder=user_usecases_builder,
             movie_usecases_builder=moview_usecases_builder,
             review_usecases_builder=review_usecases_builder,

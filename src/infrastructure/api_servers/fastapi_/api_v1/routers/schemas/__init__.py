@@ -1,4 +1,5 @@
-from . import id_ as id_
-from . import movies as movies
-from . import reviews as reviews
-from . import users as users
+from . import auth as auth
+from . import movie as movie
+from . import review as review
+from . import user as user
+from .id_ import Id as Id

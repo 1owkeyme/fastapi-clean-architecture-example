@@ -1,4 +1,8 @@
+from . import movie as movie
+from . import review as review
+from . import user as user
 from .base import Base as Base
+from .id_ import Id as Id
 from .movie import Movie as Movie
 from .review import Review as Review
 from .user import User as User
