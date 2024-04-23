@@ -6,7 +6,7 @@ from . import dependencies, responses, schemas
 router = APIRouter()
 
 
-@router.get("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.get("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def get_all_users(
     get_all_users_usecase: dependencies.usecases.user.GetAllUsersUsecaseDependency,
 ) -> responses.user.GetAllUsersResponse:
@@ -17,23 +17,24 @@ async def get_all_users(
     return responses.user.GetAllUsersResponse.new(users=users)
 
 
-@router.get("/{user_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.get("/{user_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def get_user_by_id(
     get_user_by_id_usecase: dependencies.usecases.user.GetUserByIdUsecaseDependency,
     user_id: dependencies.path.UserIdFromPathDependency,
-) -> responses.user.GetUserByIdResponse:
+) -> responses.user.GetUserByIdResponse | responses.user.NoUserFoundErrorResponse:
     user_id_entity = user_id.to_id_entity()
 
-    user_enitity = await get_user_by_id_usecase.execute(user_id_entity)
+    if (user_enitity := await get_user_by_id_usecase.execute(user_id_entity)) is None:
+        return responses.user.NoUserFoundErrorResponse.new()
 
     user = schemas.user.UserPublic.from_entity(user_enitity)
     return responses.user.GetUserByIdResponse.new(user=user)
 
 
-@router.post("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.post("/", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def create_user(
     create_user_usecase: dependencies.usecases.user.CreateUserUsecaseDependency,
-    create_user_schema: schemas.user.CreateUser,
+    create_user_schema: dependencies.forms.UserCredentialFormDependency,
 ) -> responses.user.CreateUserResponse:
     user_plain_credentials_entity = create_user_schema.to_user_plain_credentials_entity()
 
@@ -45,7 +46,7 @@ async def create_user(
     return responses.user.CreateUserResponse.new(id_=user_id_schema.user_id)
 
 
-@router.delete("/{user_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.delete("/{user_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def delete_user_by_id(
     delete_user_usecase: dependencies.usecases.user.DeleteUserByIdUsecaseDependency,
     user_id: dependencies.path.UserIdFromPathDependency,
@@ -57,7 +58,7 @@ async def delete_user_by_id(
     return responses.user.DeleteUserByIdResponse.new(id_=user_id_schema.user_id)
 
 
-@router.get("/{user_id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserIdDependency])
+@router.get("/{user_id}/reviews", dependencies=[dependencies.auth.EnsureCurrentUserDependency])
 async def get_all_user_reviews_by_id(
     get_all_user_reviews_usecase: dependencies.usecases.user.GetAllUserReviewsByIdUsecaseDependency,
     user_id: dependencies.path.UserIdFromPathDependency,

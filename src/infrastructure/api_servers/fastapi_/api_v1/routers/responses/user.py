@@ -64,3 +64,16 @@ class GetAllUserReviewsByIdResponse(base.SuccessResponse):
     @classmethod
     def new(cls, reviews_for_user: list[schemas.review.ReviewForUser]) -> t.Self:
         return cls(result=GetAllUserReviewsByIdResult(reviews=reviews_for_user))
+
+
+class NoUserFoundErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.USER_NOT_FOUND
+    message: str = "User not found"
+
+
+class NoUserFoundErrorResponse(base.error.ErrorResponse):
+    error: NoUserFoundErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=NoUserFoundErrorResult())

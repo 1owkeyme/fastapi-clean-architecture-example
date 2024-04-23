@@ -1,6 +1,7 @@
 import typing as t
+from http import HTTPStatus
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from domain import usecases
 
@@ -10,7 +11,7 @@ movie_usecases_builder: usecases.movie.MovieUsecasesBuilder | None = None
 
 def __get_movie_usecases_builder() -> usecases.movie.MovieUsecasesBuilder:
     if movie_usecases_builder is None:
-        raise RuntimeError  # TODO: raise HTTPException or smth
+        raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail="Usecases are not initialized")
     return movie_usecases_builder
 
 

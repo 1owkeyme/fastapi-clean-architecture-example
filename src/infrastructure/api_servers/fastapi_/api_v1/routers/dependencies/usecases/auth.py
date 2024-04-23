@@ -1,6 +1,7 @@
 import typing as t
+from http import HTTPStatus
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from domain import usecases
 
@@ -10,7 +11,7 @@ auth_usecases_builder: usecases.auth.AuthUsecasesBuilder | None = None
 
 def __get_auth_usecases_builder() -> usecases.auth.AuthUsecasesBuilder:
     if auth_usecases_builder is None:
-        raise RuntimeError  # TODO: raise HTTPException or smth
+        raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail="Usecases are not initialized")
     return auth_usecases_builder
 
 

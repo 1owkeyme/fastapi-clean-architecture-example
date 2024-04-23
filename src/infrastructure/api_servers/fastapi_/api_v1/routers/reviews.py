@@ -6,7 +6,7 @@ from . import dependencies, responses, schemas
 router = APIRouter()
 
 
-@router.get("/{review_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.get("/{review_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def get_review_by_id(
     get_review_by_id_usecase: dependencies.usecases.review.GetReviewByIdUsecaseDependency,
     review_id: dependencies.path.ReviewIdFromPathDependency,
@@ -21,10 +21,10 @@ async def get_review_by_id(
 async def create_review_by_movie_id(
     create_review_usecase: dependencies.usecases.review.CreateReviewUsecaseDependency,
     create_review_schema: schemas.review.CreateReview,
-    current_user_id: dependencies.auth.CurrentUserIdDependency,
+    current_user: dependencies.auth.CurrentUserDependency,
     movie_id: dependencies.path.MovieIdFromPathDependency,
 ) -> responses.review.CreateReviewResponse:
-    user_id_entity = current_user_id.to_id_entity()
+    user_id_entity = current_user.to_id_entity()
     movie_id_entity = movie_id.to_id_entity()
     review_info_entity = create_review_schema.to_entity()
 
@@ -38,7 +38,7 @@ async def create_review_by_movie_id(
     return responses.review.CreateReviewResponse.new(id_=review_id_schema.review_id)
 
 
-@router.delete("/{review_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserIdDependency])
+@router.delete("/{review_id}", dependencies=[dependencies.auth.EnsureCurrentSuperUserDependency])
 async def delete_review_by_id(
     delete_review_usecase: dependencies.usecases.review.DeleteReviewByIdUsecaseDependency,
     review_id: dependencies.path.ReviewIdFromPathDependency,

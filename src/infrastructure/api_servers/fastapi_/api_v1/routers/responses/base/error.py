@@ -1,15 +1,8 @@
 import typing as t
-from enum import IntEnum
-from http import HTTPStatus
 
 from common import StrictBaseModel
 
-
-class ErrorCode(IntEnum):
-    UNAUTHENTICATED = HTTPStatus.UNAUTHORIZED
-    UNAUTHORIZED = HTTPStatus.FORBIDDEN
-    VALIDATION_ERROR = HTTPStatus.UNPROCESSABLE_ENTITY
-    UNHANDLED_SERVER_ERROR = HTTPStatus.INTERNAL_SERVER_ERROR
+from .error_codes import ErrorCode
 
 
 class ErrorResult(StrictBaseModel):
@@ -50,3 +43,5 @@ class UnhandledErrorResponse(ErrorResponse):
     @classmethod
     def new(cls) -> t.Self:
         return cls(error=UnhandledErrorResult())
+
+

@@ -1,6 +1,7 @@
 import typing as t
+from http import HTTPStatus
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from domain import usecases
 
@@ -10,7 +11,7 @@ user_usecases_builder: usecases.user.UserUsecasesBuilder | None = None
 
 def __get_user_usecases_builder() -> usecases.user.UserUsecasesBuilder:
     if user_usecases_builder is None:
-        raise RuntimeError  # TODO: raise HTTPException or smth
+        raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail="Usecases are not initialized")
     return user_usecases_builder
 
 
@@ -49,9 +50,6 @@ def __get_get_user_by_id_usecase() -> usecases.user.GetUserByIdUsecase:
 
 
 GetUserByIdUsecaseDependency = t.Annotated[usecases.user.GetUserByIdUsecase, Depends(__get_get_user_by_id_usecase)]
-
-
-
 
 
 def __get_is_user_super_user_usecase() -> usecases.user.IsUserSuperUserUsecase:

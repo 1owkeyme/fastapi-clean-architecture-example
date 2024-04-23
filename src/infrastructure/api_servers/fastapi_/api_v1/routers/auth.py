@@ -10,14 +10,12 @@ router = APIRouter()
 
 @router.post("/login")
 async def login(
-    form_data: dependencies.auth.OAuth2PasswordRequestFormDependency,
+    user_credentials_form: dependencies.forms.UserCredentialFormDependency,
     authenticate_user_usecase: dependencies.usecases.auth.AuthenticateUserUsecaseDependency,
     create_user_access_token_usecase: dependencies.usecases.auth.CreateUserAccessTokenUsecaseDependency,
 ) -> responses.auth.LoginResponse | responses.auth.InvalidCredentialsResponse:
-    user_credentials = schemas.user.UserCredentials.from_oauth2_password_request_form_data(form_data)
-
     try:
-        user_entity = await authenticate_user_usecase.execute(user_credentials.to_user_plain_credentials_entity())
+        user_entity = await authenticate_user_usecase.execute(user_credentials_form.to_user_plain_credentials_entity())
     except usecases.auth.errors.InvalidCredentialsError:
         return responses.auth.InvalidCredentialsResponse.new()
 

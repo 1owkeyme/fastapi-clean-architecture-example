@@ -1,7 +1,7 @@
-import logging
 import typing as t
 from http import HTTPStatus
 
+from loguru import logger
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
@@ -10,15 +10,16 @@ from starlette.responses import JSONResponse, Response
 from domain import usecases
 
 from . import responses
-
-
-logger = logging.getLogger(__name__)
+from .dependencies import auth_errors
 
 
 async def handle_http_exception(
-    request: Request,  # noqa: ARG001
+    request: Request,
     exc: HTTPException,
 ) -> JSONResponse:
+    if exc.status_code == HTTPStatus.UNAUTHORIZED:
+        return await handle_unauthenticated_error(request, None)
+
     details = exc.detail
 
     msg_warn = f"HTTP exception occurred.\nDetails: {details}."
@@ -50,11 +51,11 @@ async def handle_request_validation_exception(
 
 
 async def handle_usecase_critical_exception(
-    request: Request,  # noqa:ARG001
-    exc: usecases.interfaces.errors.UsecaseCriticalError,  # noqa:ARG001
+    request: Request,  # noqa: ARG001
+    exc: usecases.interfaces.errors.UsecaseCriticalError,  # noqa: ARG001
 ) -> JSONResponse:
     msg_crit = "Unhandled usecase critical error has occurred"
-    logger.critical(msg_crit, exc_info=True)
+    logger.opt(exception=True).critical(msg_crit)
 
     body = responses.base.error.UnhandledErrorResponse.new()
 
@@ -62,23 +63,46 @@ async def handle_usecase_critical_exception(
 
 
 async def handle_usecase_exception(
-    request: Request,  # noqa:ARG001
-    exc: usecases.interfaces.errors.UsecaseError,  # noqa:ARG001
+    request: Request,  # noqa: ARG001
+    exc: usecases.interfaces.errors.UsecaseError,  # noqa: ARG001
 ) -> JSONResponse:
     msg_err = "Unhandled usecase error has occurred"
-    logger.error(msg_err, exc_info=True)
+    logger.opt(exception=True).error(msg_err)
 
     body = responses.base.error.UnhandledErrorResponse.new()
 
     return JSONResponse(status_code=HTTPStatus.OK, content=body.model_dump())
 
 
-# TODO: test this one
+async def handle_unauthenticated_error(
+    request: Request,  # noqa: ARG001
+    exc: auth_errors.UnauthenticatedError | None = None,  # noqa: ARG001
+) -> JSONResponse:
+    msg_warn = "Access denied for incoming request"
+    logger.warning(msg_warn)
+
+    body = responses.auth.UnauthenticatedErrorResponse.new()
+    return JSONResponse(status_code=HTTPStatus.OK, content=body.model_dump())
+
+
+async def handle_unauthorized_error(
+    request: Request,  # noqa: ARG001
+    exc: auth_errors.UnauthorizedError,  # noqa: ARG001
+) -> JSONResponse:
+    msg_warn = "Permission denied for incoming  request"
+    logger.warning(msg_warn)
+
+    body = responses.auth.UnauthorizedErrorResponse.new()
+    return JSONResponse(status_code=HTTPStatus.OK, content=body.model_dump())
+
+
 EXCEPTION_TO_HANDLER: (
     dict[int | t.Type[Exception], t.Callable[[Request, t.Any], t.Coroutine[t.Any, t.Any, Response]]] | None
 ) = {
-    usecases.interfaces.errors.UsecaseCriticalError: handle_usecase_critical_exception,
-    usecases.interfaces.errors.UsecaseError: handle_usecase_exception,
     HTTPException: handle_http_exception,
     ValidationError: handle_request_validation_exception,
+    usecases.interfaces.errors.UsecaseCriticalError: handle_usecase_critical_exception,
+    usecases.interfaces.errors.UsecaseError: handle_usecase_exception,
+    auth_errors.UnauthenticatedError: handle_unauthenticated_error,
+    auth_errors.UnauthorizedError: handle_unauthorized_error,
 }

@@ -18,3 +18,29 @@ class InvalidCredentialsResponse(base.error.ErrorResponse):
     @classmethod
     def new(cls) -> t.Self:
         return cls(error=InvalidCredentialsResult())
+
+
+class UnauthenticatedErrorResult(base.error.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.UNAUTHENTICATED
+    message: str = "Access denied. Please log in to continue"
+
+
+class UnauthenticatedErrorResponse(base.error.ErrorResponse):
+    error: UnauthenticatedErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=UnauthenticatedErrorResult())
+
+
+class UnauthorizedErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.UNAUTHORIZED
+    message: str = "Permission denied. Access restricted"
+
+
+class UnauthorizedErrorResponse(base.error.ErrorResponse):
+    error: UnauthorizedErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=UnauthorizedErrorResult())

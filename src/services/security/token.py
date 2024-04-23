@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt  # type:ignore[import-untyped]
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
 from common import StrictBaseModel
 from domain import entities
@@ -9,7 +9,7 @@ from domain.usecases.interfaces.services import security as security_interfaces
 
 
 class TokenPayload(StrictBaseModel):
-    exp: datetime
+    exp: datetime = Field(strict=False)
     sub: str
 
 
@@ -28,7 +28,7 @@ class JWTService(security_interfaces.TokenService):
     def read_access_token(token: entities.auth.AccessToken, secret: str) -> entities.Id:
         try:
             raw_token_payload = jwt.decode(token, secret, algorithms=[security_interfaces.token.ALGORITHM])
-            token_payload = TokenPayload(**raw_token_payload)
+            token_payload = TokenPayload.model_validate(raw_token_payload)
         except (JWTError, ValidationError) as exc:
             raise security_interfaces.token_errors.InvalidTokenError from exc
 
