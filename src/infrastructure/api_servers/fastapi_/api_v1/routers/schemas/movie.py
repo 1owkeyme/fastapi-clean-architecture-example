@@ -10,8 +10,8 @@ from .id_ import Id
 
 
 class MovieInfo(StrictBaseModel):
-    title: str = Field(examples=["The Great Gatsby"])
-    duration: timedelta = Field(strict=False, examples=["P0DT2H33M0S"])
+    title: str = Field(examples=["Shrek"])
+    duration: timedelta = Field(strict=False, examples=["P0DT1H29M0S"])
 
     def to_movie_info_entity(self) -> entities.movie.MovieInfo:
         return entities.movie.MovieInfo(

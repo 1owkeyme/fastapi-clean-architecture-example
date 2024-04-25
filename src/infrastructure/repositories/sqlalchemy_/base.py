@@ -24,7 +24,12 @@ class AlchemyBaseRepository:
         @asynccontextmanager
         async def __get_scoped_session() -> t.AsyncIterator[async_scoped_session[AsyncSession]]:
             scoped_session = async_scoped_session(self._session_factory, scopefunc=current_task)
-            yield scoped_session
-            await scoped_session.close()
+            try:
+                yield scoped_session
+            except Exception as exc:
+                await scoped_session.rollback()
+                raise exc
+            finally:
+                await scoped_session.close()
 
         return __get_scoped_session

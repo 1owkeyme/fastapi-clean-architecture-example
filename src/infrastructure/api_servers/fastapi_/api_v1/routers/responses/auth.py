@@ -8,7 +8,7 @@ LoginResponse: t.TypeAlias = TokenInfo  # Strict schema defined by FastAPI
 
 
 class InvalidCredentialsResult(base.ErrorResult):
-    code: base.error.ErrorCode = base.error.ErrorCode.UNAUTHORIZED
+    code: base.ErrorCode = base.ErrorCode.UNAUTHORIZED
     message: str = "Invalid credentials"
 
 

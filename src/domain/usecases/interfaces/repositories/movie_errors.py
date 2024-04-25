@@ -1,11 +1,8 @@
-from .. import errors as base_err
-
-
-class MovieRepositoryCriticalError(base_err.UsecaseCriticalError):
+class MovieRepositoryCriticalError(Exception):
     pass
 
 
-class MovieRepositoryError(base_err.UsecaseError):
+class MovieRepositoryError(Exception):
     pass
 
 

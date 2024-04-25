@@ -52,7 +52,7 @@ async def handle_request_validation_exception(
 
 async def handle_usecase_critical_exception(
     request: Request,  # noqa: ARG001
-    exc: usecases.interfaces.errors.UsecaseCriticalError,  # noqa: ARG001
+    exc: usecases.errors.UsecaseCriticalError,  # noqa: ARG001
 ) -> JSONResponse:
     msg_crit = "Unhandled usecase critical error has occurred"
     logger.opt(exception=True).critical(msg_crit)
@@ -64,7 +64,7 @@ async def handle_usecase_critical_exception(
 
 async def handle_usecase_exception(
     request: Request,  # noqa: ARG001
-    exc: usecases.interfaces.errors.UsecaseError,  # noqa: ARG001
+    exc: usecases.errors.UsecaseError,  # noqa: ARG001
 ) -> JSONResponse:
     msg_err = "Unhandled usecase error has occurred"
     logger.opt(exception=True).error(msg_err)
@@ -101,8 +101,8 @@ EXCEPTION_TO_HANDLER: (
 ) = {
     HTTPException: handle_http_exception,
     ValidationError: handle_request_validation_exception,
-    usecases.interfaces.errors.UsecaseCriticalError: handle_usecase_critical_exception,
-    usecases.interfaces.errors.UsecaseError: handle_usecase_exception,
+    usecases.errors.UsecaseCriticalError: handle_usecase_critical_exception,
+    usecases.errors.UsecaseError: handle_usecase_exception,
     auth_errors.UnauthenticatedError: handle_unauthenticated_error,
     auth_errors.UnauthorizedError: handle_unauthorized_error,
 }

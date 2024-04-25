@@ -24,15 +24,17 @@ GetReviewByIdUsecaseDependency = t.Annotated[
 ]
 
 
-def __get_create_review_usecase() -> usecases.review.CreateReviewUsecase:
-    return __get_review_usecases_builder().construct_create_review_usecase()
+def __get_create_review_by_movie_id_usecase() -> usecases.review.CreateReviewByMovieIdUsecase:
+    return __get_review_usecases_builder().construct_create_review_by_movie_id_usecase()
 
 
-CreateReviewUsecaseDependency = t.Annotated[usecases.review.CreateReviewUsecase, Depends(__get_create_review_usecase)]
+CreateReviewByMovieIdUsecaseDependency = t.Annotated[
+    usecases.review.CreateReviewByMovieIdUsecase, Depends(__get_create_review_by_movie_id_usecase)
+]
 
 
 def __get_delete_review_by_id_usecase() -> usecases.review.DeleteReviewByIdUsecase:
-    return __get_review_usecases_builder().construct_delete_review_by_idusecase()
+    return __get_review_usecases_builder().construct_delete_review_by_id_usecase()
 
 
 DeleteReviewByIdUsecaseDependency = t.Annotated[

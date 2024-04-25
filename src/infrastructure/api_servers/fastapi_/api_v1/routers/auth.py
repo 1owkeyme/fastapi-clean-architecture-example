@@ -18,7 +18,6 @@ async def login(
         user_entity = await authenticate_user_usecase.execute(user_credentials_form.to_user_plain_credentials_entity())
     except usecases.auth.errors.InvalidCredentialsError:
         return responses.auth.InvalidCredentialsResponse.new()
-
     access_token_entity = await create_user_access_token_usecase.execute(user_entity)
 
     return schemas.auth.TokenInfo.from_access_token_entity(access_token_entity)

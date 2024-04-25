@@ -48,7 +48,12 @@ class AlchemyMovieRepository(AlchemyBaseRepository, usecases.interfaces.reposito
         return id_entity
 
     async def get_all_movie_reviews_by_id(self, id_entity: entities.Id) -> list[entities.review.ReviewForMovie]:
-        stmt = select(models.Movie).options(selectinload(models.Movie.reviews)).where(models.Movie.id == id_entity.id)
+        stmt = (
+            select(models.Movie)
+            .options(selectinload(models.Movie.reviews).joinedload(models.Review.user))
+            .where(models.Movie.id == id_entity.id)
+        )
+
         async with self._scoped_session_factory() as session:
             if (movie := await session.scalar(stmt)) is not None:
                 return [review.to_review_for_movie_entity() for review in movie.reviews]

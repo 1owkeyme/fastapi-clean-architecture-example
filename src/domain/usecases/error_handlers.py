@@ -1,6 +1,6 @@
 import typing as t
 
-from .interfaces import errors as err
+from . import errors as err
 
 
 T = t.TypeVar("T")

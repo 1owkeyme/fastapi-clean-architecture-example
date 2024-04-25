@@ -40,3 +40,29 @@ class DeleteReviewByIdResponse(base.SuccessResponse):
     @classmethod
     def new(cls, id_: int) -> t.Self:
         return cls(result=DeleteReviewByIdResult(review_id=id_))
+
+
+class ReviewNotFoundErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.REVIEW_NOT_FOUND
+    message: str = "Review not found"
+
+
+class ReviewNotFoundErrorResponse(base.error.ErrorResponse):
+    error: ReviewNotFoundErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=ReviewNotFoundErrorResult())
+
+
+class ReviewAlreadyExistsErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.REVIEW_ALREADY_EXISTS
+    message: str = "Review already exists"
+
+
+class ReviewAlreadyExistsErrorResponse(base.error.ErrorResponse):
+    error: ReviewAlreadyExistsErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=ReviewAlreadyExistsErrorResult())

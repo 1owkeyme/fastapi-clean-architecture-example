@@ -42,10 +42,15 @@ class AlchemyUserRepository(AlchemyBaseRepository, usecases.interfaces.repositor
 
         return [user.to_user_public_entity() for user in users]
 
-    async def create_user(self, safe_credentials_entity: entities.user.SafeCredentials) -> entities.Id:
+    async def create_user(
+        self,
+        safe_credentials_entity: entities.user.SafeCredentials,
+        is_super_user: bool,
+    ) -> entities.Id:
         user = models.User(
             username=safe_credentials_entity.username,
             hashed_password_hex=safe_credentials_entity.hashed_password_hex,
+            is_super_user=is_super_user,
         )
         async with self._scoped_session_factory() as session:
             session.add(user)

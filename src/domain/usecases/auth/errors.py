@@ -1,4 +1,4 @@
-from ..interfaces import errors as base_err
+from .. import errors as base_err
 
 
 class AuthUsecaseError(base_err.UsecaseError):

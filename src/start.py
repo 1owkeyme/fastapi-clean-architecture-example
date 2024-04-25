@@ -22,9 +22,9 @@ def main() -> int:
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         jwt_service = services.security.token.JWTService()
-        user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
-        movie_alchemy = sqlalchemy_.movie.AlchemyMovieRepository(str(settings.POSTGRES_DSN))
-        review_alchemy = sqlalchemy_.review.AlchemyReviewRepository(str(settings.POSTGRES_DSN))
+        user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN), settings.ECHO_SQL)
+        movie_alchemy = sqlalchemy_.movie.AlchemyMovieRepository(str(settings.POSTGRES_DSN), settings.ECHO_SQL)
+        review_alchemy = sqlalchemy_.review.AlchemyReviewRepository(str(settings.POSTGRES_DSN), settings.ECHO_SQL)
 
         auth_usecases_builder = usecases.auth.AuthUsecasesBuilder(
             user_repository=user_alchemy,
@@ -36,6 +36,7 @@ def main() -> int:
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
             user_repository=user_alchemy,
             password_service=bcrypt_password_service,
+            first_super_user_username=settings.FIRST_SUPER_USER_USERNAME,
         )
         moview_usecases_builder = usecases.movie.MovieUsecasesBuilder(movie_repository=movie_alchemy)
         review_usecases_builder = usecases.review.ReviewUsecasesBuilder(review_repository=review_alchemy)

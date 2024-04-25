@@ -3,6 +3,7 @@ from datetime import timedelta
 from domain import entities
 
 from .. import interfaces
+from ..error_handlers import handle_usecases_errors
 
 
 class CreateUserAccessTokenUsecase:
@@ -18,6 +19,7 @@ class CreateUserAccessTokenUsecase:
         self._secret = secret
         self._access_token_expires_delta = access_token_expires_delta
 
+    @handle_usecases_errors
     async def execute(self, user_id: entities.Id) -> entities.auth.AccessToken:
         return self._token_service.create_access_token(
             user_id=user_id,

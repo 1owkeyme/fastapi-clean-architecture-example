@@ -37,9 +37,11 @@ class Review(Id, ReviewInfo, UserRelationMixin, MovieRelationMixin):
 
     _user_id_unique = False  # separate compound unique index created
     _user_back_populates = TableName.REVIEWS
+    _many_to_one_user = True
 
     _movie_id_unique = False  # separate compound unique index created
     _movie_back_populates = TableName.REVIEWS
+    _many_to_one_movie = True
 
     def to_entity(self) -> entities.review.Review:
         return entities.review.Review(

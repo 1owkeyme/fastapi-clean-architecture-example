@@ -20,13 +20,14 @@ async def __get_current_user_public(
 ) -> schemas.user.UserPublic:
     try:
         unverified_id_entity = await read_user_access_token_usecase.execute(bearer_token)
-    except usecases.interfaces.services.security.token_errors.InvalidTokenError:
+    except usecases.auth.errors.InvalidCredentialsError:
         raise err.UnauthenticatedError from None
 
-    if (user_public_entity := await get_user_by_id_usecase.execute(unverified_id_entity)) is not None:
-        return schemas.user.UserPublic.from_entity(user_public_entity)
-
-    raise err.UnauthenticatedError
+    try:
+        user_public_entity = await get_user_by_id_usecase.execute(unverified_id_entity)
+    except usecases.user.errors.UserNotFoundError as exc:
+        raise err.UnauthenticatedError from exc
+    return schemas.user.UserPublic.from_entity(user_public_entity)
 
 
 CurrentUserDependency = t.Annotated[schemas.user.UserPublic, Depends(__get_current_user_public)]

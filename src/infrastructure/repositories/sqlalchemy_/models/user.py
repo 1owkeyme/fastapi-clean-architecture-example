@@ -57,6 +57,7 @@ class UserRelationMixin:
     _user_id_unique: bool = False
     _user_id_nullable: bool = False
     _user_back_populates: str | None = None
+    _many_to_one_user: bool = False
 
     @declared_attr
     @classmethod
@@ -71,4 +72,4 @@ class UserRelationMixin:
     @declared_attr
     @classmethod
     def user(cls) -> Mapped[User]:
-        return relationship(back_populates=cls._user_back_populates)
+        return relationship(back_populates=cls._user_back_populates, innerjoin=cls._many_to_one_user)

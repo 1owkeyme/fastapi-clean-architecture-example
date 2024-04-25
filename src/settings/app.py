@@ -43,6 +43,8 @@ class AppSettings(BaseAppSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str = ""
 
+    ECHO_SQL: bool = False
+
     @computed_field  # type:ignore[misc]
     @property
     def POSTGRES_DSN(self) -> PostgresDsn:  # noqa: N802

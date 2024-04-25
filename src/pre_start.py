@@ -22,9 +22,11 @@ __WAIT_INTERVAL = 1
 
 
 @retry(stop=stop_after_attempt(__MAX_ATTEMPTS), wait=wait_fixed(__WAIT_INTERVAL))
-def get_pong(get_all_users_usecase: usecases.user.GetAllUsersUsecase) -> None:
+def get_db_pong(get_all_users_usecase: usecases.user.GetAllUsersUsecase) -> None:
     try:
-        asyncio.run(get_all_users_usecase.execute())
+        _ = asyncio.run(
+            get_all_users_usecase.execute(),  # type: ignore[arg-type] # since we just want to know repository is up
+        )
     except Exception as exc:
         msg_err = f"{exc}"
         logger.error(msg_err)
@@ -34,7 +36,6 @@ def get_pong(get_all_users_usecase: usecases.user.GetAllUsersUsecase) -> None:
 def main() -> int:
     try:
         settings = get_app_settings()
-        settings.__configure_logging()
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
@@ -42,6 +43,7 @@ def main() -> int:
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
             user_repository=user_alchemy,
             password_service=bcrypt_password_service,
+            first_super_user_username=settings.FIRST_SUPER_USER_USERNAME,
         )
 
     except Exception:
@@ -50,7 +52,7 @@ def main() -> int:
         return ExitCode.FAILURE
 
     try:
-        get_pong(user_usecases_builder.construct_get_all_users_usecase())
+        get_db_pong(user_usecases_builder.construct_get_all_users_usecase())
     except Exception:
         msg_crit = "Got unhandled error during service process"
         logger.opt(exception=True).critical(msg_crit)

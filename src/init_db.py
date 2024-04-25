@@ -19,7 +19,6 @@ class ExitCode(IntEnum):
 def main() -> int:
     try:
         settings = get_app_settings()
-        settings.__configure_logging()
 
         bcrypt_password_service = services.security.password.BCryptPasswordService()
         user_alchemy = sqlalchemy_.user.AlchemyUserRepository(str(settings.POSTGRES_DSN))
@@ -27,6 +26,7 @@ def main() -> int:
         user_usecases_builder = usecases.user.UserUsecasesBuilder(
             user_repository=user_alchemy,
             password_service=bcrypt_password_service,
+            first_super_user_username=settings.FIRST_SUPER_USER_USERNAME,
         )
 
         first_super_user_plain_credentials = entities.user.PlainCredentials(
@@ -39,7 +39,13 @@ def main() -> int:
         return ExitCode.FAILURE
 
     try:
-        asyncio.run(user_usecases_builder.construct_create_user_usecase().execute(first_super_user_plain_credentials))
+        asyncio.run(
+            user_usecases_builder.construct_create_user_usecase().execute(
+                first_super_user_plain_credentials, is_super_user=True
+            ),  # type: ignore[arg-type] # since don't need returned id
+        )
+    except usecases.user.errors.UserAlreadyExistsError:
+        pass
     except Exception:
         msg_crit = "Got unhandled error during service process"
         logger.opt(exception=True).critical(msg_crit)

@@ -1,6 +1,8 @@
 from domain import entities
 
 from .. import interfaces
+from ..error_handlers import handle_usecases_errors
+from . import errors as err
 
 
 class ReadUserAccessTokenUsecase:
@@ -14,5 +16,9 @@ class ReadUserAccessTokenUsecase:
         self._token_service = token_service
         self._secret = secret
 
+    @handle_usecases_errors
     async def execute(self, token: entities.auth.AccessToken) -> entities.Id:
-        return self._token_service.read_access_token(token=token, secret=self._secret)
+        try:
+            return self._token_service.read_access_token(token=token, secret=self._secret)
+        except interfaces.services.security.token_errors.TokenServiceError:
+            raise err.InvalidCredentialsError from None

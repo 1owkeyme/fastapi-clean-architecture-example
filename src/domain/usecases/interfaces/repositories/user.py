@@ -21,7 +21,11 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def create_user(self, safe_credentials_entity: entities.user.SafeCredentials) -> entities.Id:
+    async def create_user(
+        self,
+        safe_credentials_entity: entities.user.SafeCredentials,
+        is_super_user: bool,
+    ) -> entities.Id:
         pass
 
     @abstractmethod

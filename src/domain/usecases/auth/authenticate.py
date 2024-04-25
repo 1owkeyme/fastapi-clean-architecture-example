@@ -1,6 +1,7 @@
 from domain import entities
 
 from .. import interfaces
+from ..error_handlers import handle_usecases_errors
 from . import errors as err
 
 
@@ -13,6 +14,7 @@ class AuthenticateUserUsecase:
         self._user_repository = user_repository
         self._password_service = password_service
 
+    @handle_usecases_errors
     async def execute(self, plain_credentials: entities.user.PlainCredentials) -> entities.Id:
         try:
             user_private = await self._user_repository.get_user_private_by_username(plain_credentials)

@@ -40,6 +40,7 @@ class MovieRelationMixin:
     _movie_id_unique: bool = False
     _movie_id_nullable: bool = False
     _movie_back_populates: str | None = None
+    _many_to_one_movie: bool = False
 
     @declared_attr
     @classmethod
@@ -54,4 +55,4 @@ class MovieRelationMixin:
     @declared_attr
     @classmethod
     def movie(cls) -> Mapped[Movie]:
-        return relationship(back_populates=cls._movie_back_populates)
+        return relationship(back_populates=cls._movie_back_populates, innerjoin=cls._many_to_one_movie)

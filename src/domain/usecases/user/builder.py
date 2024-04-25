@@ -12,10 +12,13 @@ class UserUsecasesBuilder:
         self,
         user_repository: interfaces.repositories.UserRepository,
         password_service: interfaces.services.security.PasswordService,
+        first_super_user_username: str,
     ) -> None:
         self._user_repository = user_repository
 
         self._password_service = password_service
+
+        self._first_super_user_username = first_super_user_username
 
     def construct_create_user_usecase(self) -> CreateUserUsecase:
         return CreateUserUsecase(
@@ -24,7 +27,10 @@ class UserUsecasesBuilder:
         )
 
     def construct_delete_user_by_id_usecase(self) -> DeleteUserByIdUsecase:
-        return DeleteUserByIdUsecase(user_repository=self._user_repository)
+        return DeleteUserByIdUsecase(
+            user_repository=self._user_repository,
+            first_super_user_username=self._first_super_user_username,
+        )
 
     def construct_get_all_users_usecase(self) -> GetAllUsersUsecase:
         return GetAllUsersUsecase(user_repository=self._user_repository)

@@ -64,3 +64,29 @@ class GetAllMovieReviewsByIdResponse(base.SuccessResponse):
     @classmethod
     def new(cls, reviews_for_movie: list[schemas.review.ReviewForMovie]) -> t.Self:
         return cls(result=GetAllMovieReviewsByIdResult(reviews=reviews_for_movie))
+
+
+class MovieNotFoundErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.MOVIE_NOT_FOUND
+    message: str = "Movie not found"
+
+
+class MovieNotFoundErrorResponse(base.error.ErrorResponse):
+    error: MovieNotFoundErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=MovieNotFoundErrorResult())
+
+
+class MovieAlreadyExistsErrorResult(base.ErrorResult):
+    code: base.ErrorCode = base.ErrorCode.MOVIE_NOT_FOUND
+    message: str = "Movie already exists"
+
+
+class MovieAlreadyExistsErrorResponse(base.error.ErrorResponse):
+    error: MovieAlreadyExistsErrorResult
+
+    @classmethod
+    def new(cls) -> t.Self:
+        return cls(error=MovieAlreadyExistsErrorResult())

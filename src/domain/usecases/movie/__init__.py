@@ -1,3 +1,4 @@
+from . import errors as errors
 from .builder import MovieUsecasesBuilder as MovieUsecasesBuilder
 from .create import CreateMovieUsecase as CreateMovieUsecase
 from .delete_by_id import DeleteMovieByIdUsecase as DeleteMovieByIdUsecase

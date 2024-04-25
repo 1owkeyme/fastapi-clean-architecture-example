@@ -1,11 +1,8 @@
-from .. import errors as base_err
-
-
-class ReviewRepositoryCriticalError(base_err.UsecaseCriticalError):
+class ReviewRepositoryCriticalError(Exception):
     pass
 
 
-class ReviewRepositoryError(base_err.UsecaseError):
+class ReviewRepositoryError(Exception):
     pass
 
 
