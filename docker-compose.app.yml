@@ -1,0 +1,28 @@
+services:
+  fastapi_example:
+    image: fastapi_example
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_example
+
+    env_file:
+      - .env.example
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=${POSTGRES_PORT?POSTGRES_PORT variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?POSTGRES_USER variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?POSTGRES_PASSWORD variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?POSTGRES_DB variable not set}
+      - FIRST_SUPER_USER_USERNAME=${FIRST_SUPER_USER_USERNAME?FIRST_SUPER_USER_USERNAME variable not set}
+      - FIRST_SUPER_USER_PASSWORD=${FIRST_SUPER_USER_PASSWORD?FIRST_SUPER_USER_PASSWORD variable not set}
+    ports:
+      - "4343:4343"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+
+networks:
+  postgres:
+    external: true

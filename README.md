@@ -33,9 +33,12 @@
 - [Project Overview](#project-overview)
   - [Built With](#built-with)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [License](#license)
+  - [Quick Start with Docker](#quick-start-with-docker)
+    - [Prerequisites](#prerequisites)
+    - [Setup Process](#setup-process)
+  - [Local Development](#local-development)
+    - [Prerequisites](#prerequisites-1)
+    - [Setup Process](#setup-process-1)
 - [Acknowledgments](#acknowledgments)
 
 </details>
@@ -56,23 +59,112 @@
 
 ## Getting Started
 
-... contents will be here later
+### Quick Start with Docker
 
-### Prerequisites
+#### Prerequisites
 
-... contents will be here later
+- `docker`
+- `docker-dompose`
 
-### Installation
+#### Setup Process
 
-... contents will be here later
+1. Clone this repo
 
-<p align="right">[ <a href="#readme-top">back to top</a> ]</p>
+```
+git clone https://github.com/1owkeyme/fastapi-clean-architecture-example.git
 
-## License
+cd ./fastapi-clean-architecture-example
+```
 
-Distributed under the MIT License. See `LICENSE` for more information.
+2. Run `./docker-compose.postgres.yml`
 
-<p align="right">[ <a href="#readme-top">back to top</a> ]</p>
+```
+docker compose -f docker-compose.postgres.yml --env-file .env.example -p postgres up -d
+```
+
+3. Run `./docker-compose.app.yml`
+
+```
+docker compose -f docker-compose.app.yml --env-file .env.example -p app up -d --build
+```
+
+4. Wait 5 seconds and navigate to `http://localhost:4343/docs`
+
+Default admin username and password are set in `.env.example`
+
+5. (Optional) Clean up everything
+
+```
+docker compose -f docker-compose.app.yml --env-file .env.example -p app down
+
+# provide -v option only if you want to delete volumes
+docker compose -f docker-compose.postgres.yml --env-file .env.example -p postgres down -v
+```
+
+### Local Development
+
+#### Prerequisites
+
+- `python ^3.11`
+- `poetry ^1.7`
+- `docker` and `docker-dompose` _OR_ existing **PostgreSQL** database
+
+#### Setup Process
+
+1. Clone this repo
+
+```
+git clone https://github.com/1owkeyme/fastapi-clean-architecture-example.git
+
+cd ./fastapi-clean-architecture-example
+```
+
+2. Install dependencies and activate virtual environment
+
+```
+poetry install --no-root
+
+poetry shell
+```
+
+3. Setup **PostgreSQL** database
+
+To setup database 2 options are available:
+
+- Use `./docker-compose.postgres.yml`
+
+  ```
+  docker compose -f docker-compose.postgres.yml --env-file .env.example -p postgres up -d
+  ```
+
+- Use existing database
+
+  In case of using existing database you must configure **POSTGRES_HOST** and **POSTGRES_PORT** environment variable inside `./.env.example`
+
+4. Apply migrations and init database
+
+```
+alembic upgrade head
+
+python ./src/init_db.py
+```
+
+5. Run app with python
+
+```
+python ./src/start.py
+```
+
+6. Navigate to `http://localhost:4343/docs` and explore
+
+Default admin username and password are set in `.env.example`
+
+7. (Optional) Clean up everything in case of using `docker-compose.postgres.yml`
+
+```
+# provide -v option only if you want to delete volumes
+docker compose -f docker-compose.postgres.yml --env-file .env.example -p postgres down -v
+```
 
 ## Acknowledgments
 

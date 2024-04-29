@@ -6,6 +6,6 @@ from .app import AppSettings
 
 
 class DevAppSettings(AppSettings):
-    model_config = SettingsConfigDict(env_file=".env.dev")
+    model_config = SettingsConfigDict(env_file=".env.example")
 
     logging_level: int = logging.DEBUG
