@@ -88,9 +88,9 @@ docker compose -f docker-compose.postgres.yml --env-file .env.example -p postgre
 docker compose -f docker-compose.app.yml --env-file .env.example -p app up -d --build
 ```
 
-4. Wait 5 seconds and navigate to `http://localhost:4343/docs`
+4. Wait 5 seconds and navigate to `http://localhost:4343/docs` and explore
 
-Default admin username and password are set in `.env.example`
+Default admin username and password are set in `./.env.example`
 
 5. (Optional) Clean up everything
 
@@ -157,7 +157,7 @@ python ./src/start.py
 
 6. Navigate to `http://localhost:4343/docs` and explore
 
-Default admin username and password are set in `.env.example`
+Default admin username and password are set in `./.env.example`
 
 7. (Optional) Clean up everything in case of using `docker-compose.postgres.yml`
 
