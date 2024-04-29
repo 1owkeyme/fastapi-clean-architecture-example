@@ -30,7 +30,10 @@ class MovieInfo(Base):
 class Movie(Id, MovieInfo):
     __tablename__ = TableName.MOVIES
 
-    reviews: Mapped[list["Review"]] = relationship(back_populates="movie")
+    reviews: Mapped[list["Review"]] = relationship(
+        back_populates="movie",
+        cascade="all, delete-orphan",
+    )
 
     def to_movie_entity(self) -> entities.movie.Movie:
         return entities.movie.Movie(id=self.id, title=self.title, duration=self.duration)

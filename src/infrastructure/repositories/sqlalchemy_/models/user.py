@@ -36,7 +36,7 @@ class User(Id, SafeCredentials):
 
     is_super_user: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
 
-    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
     def to_user_public_entity(self) -> entities.user.UserPublic:
         return entities.user.UserPublic(id=self.id, username=self.username)

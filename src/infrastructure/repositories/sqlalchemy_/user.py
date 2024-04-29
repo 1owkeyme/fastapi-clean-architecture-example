@@ -71,7 +71,11 @@ class AlchemyUserRepository(AlchemyBaseRepository, usecases.interfaces.repositor
         return id_entity
 
     async def get_all_user_reviews_by_id(self, id_entity: entities.Id) -> list[entities.review.ReviewForUser]:
-        stmt = select(models.User).options(selectinload(models.User.reviews)).where(models.User.id == id_entity.id)
+        stmt = (
+            select(models.User)
+            .options(selectinload(models.User.reviews).joinedload(models.Review.movie))
+            .where(models.User.id == id_entity.id)
+        )
         async with self._scoped_session_factory() as session:
             if (user := await session.scalar(stmt)) is not None:
                 return [review.to_review_for_user_entity() for review in user.reviews]
