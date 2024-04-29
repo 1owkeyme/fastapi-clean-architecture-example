@@ -31,6 +31,4 @@ RUN chmod 755 /app/start.sh
 
 CMD ["/app/start.sh"]
 
-EXPOSE 4343
-
 

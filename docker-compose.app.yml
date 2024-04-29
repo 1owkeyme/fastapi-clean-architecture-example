@@ -17,7 +17,7 @@ services:
       - FIRST_SUPER_USER_USERNAME=${FIRST_SUPER_USER_USERNAME?FIRST_SUPER_USER_USERNAME variable not set}
       - FIRST_SUPER_USER_PASSWORD=${FIRST_SUPER_USER_PASSWORD?FIRST_SUPER_USER_PASSWORD variable not set}
     ports:
-      - "4343:4343"
+      - "${SERVING_PORT?SERVING_PORT variable not set}:${SERVING_PORT?SERVING_PORT variable not set}"
     networks:
       - postgres
     restart: unless-stopped
